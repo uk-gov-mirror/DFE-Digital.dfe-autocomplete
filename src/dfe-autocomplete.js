@@ -1,7 +1,9 @@
 import accessibleAutocomplete from 'accessible-autocomplete'
-import sort from './sort'
+import defaultSort, { createSort } from './sort'
+import { createRemoveStopWords } from './sort/stop_words'
 import { escapeHtml } from './utils/escape'
 import { createLogger } from './utils/logger'
+import { EventEmitter } from './events'
 
 const instances = new WeakMap()
 
@@ -12,15 +14,23 @@ const nullTracker = {
 
 const defaultValueOption = component => component.getAttribute('data-default-value') || ''
 
-const suggestion = (value, options) => {
+const highlightMatch = (text, query) => {
+  if (!query) return escapeHtml(text)
+  const escaped = escapeHtml(text)
+  const escapedQuery = escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escapedQuery})`, 'gi')
+  return escaped.replace(regex, '<strong>$1</strong>')
+}
+
+const suggestion = (value, options, { highlightMatches = false, currentQuery = '' } = {}) => {
   const option = options.find(o => o.name === value || o.text == value)
   if (option) {
-    const escapedValue = escapeHtml(value)
+    const renderedValue = highlightMatches ? highlightMatch(value, currentQuery) : escapeHtml(value)
     const escapedAppend = escapeHtml(option.append)
     const escapedHint = escapeHtml(option.hint)
     const html = escapedAppend
-      ? `<span>${escapedValue}</span> ${escapedAppend}`
-      : `<span>${escapedValue}</span>`
+      ? `<span>${renderedValue}</span> ${escapedAppend}`
+      : `<span>${renderedValue}</span>`
     return escapedHint ? `${html}<br>${escapedHint}` : html
   } else {
     return `<span>No results found</span>`
@@ -88,6 +98,7 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
 
   const debug = component.getAttribute('data-debug') === 'true'
   const log = createLogger(debug)
+  const emitter = new EventEmitter()
 
   const selectOptions = Array.from(selectEl.options)
   const options = selectOptions.map(o => enhanceOption(o))
@@ -95,29 +106,52 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
   const inError = formGroup ? formGroup.className.includes('error') : false
   const inputValue = defaultValueOption(component)
   const tracker = libraryOptions.tracker || nullTracker
+  const maxResults = libraryOptions.maxResults || Infinity
+
+  // Build sort function: custom sort > custom internal functions > default
+  let sortFn
+  if (libraryOptions.sort) {
+    sortFn = libraryOptions.sort
+  } else if (libraryOptions.stopWords || libraryOptions.calculateWeight || libraryOptions.clean) {
+    sortFn = createSort({
+      clean: libraryOptions.clean,
+      removeStopWords: libraryOptions.stopWords ? createRemoveStopWords(libraryOptions.stopWords) : undefined,
+      calculateWeight: libraryOptions.calculateWeight
+    })
+  } else {
+    sortFn = defaultSort
+  }
+  const doHighlight = libraryOptions.highlightMatches || false
+  let currentQuery = ''
 
   const defaultOptions = {
     autoselect: true,
     defaultValue: inError ? '' : inputValue,
     minLength: 1,
     rawAttribute: false,
+    showAllValues: libraryOptions.showAllOnFocus || false,
     selectElement: selectEl,
     trackerObject: tracker,
     onConfirm: (val) => {
       log.log('Selected:', val)
+      emitter.emit('select', { value: val })
       tracker.sendTrackingEvent(val, selectEl.name)
       const selectedOption = [].filter.call(selectOptions, option => (option.textContent || option.innerText) === val)[0]
       if (selectedOption) selectedOption.selected = true
     },
     source: (query, populateResults) => {
+      currentQuery = query
       if (/\S/.test(query)) {
         tracker.trackSearch(query)
-        const results = sort(query, options)
+        const results = sortFn(query, options).slice(0, maxResults)
         log.log('Search:', query, '\u2192', results.length, 'results')
+        emitter.emit('search', { query, results })
         populateResults(results)
       }
     },
-    templates: { suggestion: (value) => suggestion(value, options) }
+    templates: {
+      suggestion: (value) => suggestion(value, options, { highlightMatches: doHighlight, currentQuery })
+    }
   }
 
   const autocompleteOptions = Object.assign({}, defaultOptions, libraryOptions)
@@ -135,7 +169,10 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
   const autocompleteWrapper = component.querySelector('.autocomplete__wrapper')
 
   const instance = {
+    on: (event, cb) => emitter.on(event, cb),
+    off: (event, cb) => emitter.off(event, cb),
     destroy () {
+      emitter.emit('destroy')
       if (autocompleteWrapper) autocompleteWrapper.remove()
       selectEl.style.display = ''
       if (selectEl.id.endsWith('-select')) {

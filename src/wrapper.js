@@ -4,7 +4,11 @@ function dfeAutocomplete(libraryOptions = {}) {
   const $allAutocompleteElements = document.querySelectorAll('[data-module="app-dfe-autocomplete"]')
 
   $allAutocompleteElements.forEach((element) => {
-    setupAccessibleAutoComplete(element, libraryOptions)
+    try {
+      setupAccessibleAutoComplete(element, libraryOptions)
+    } catch (error) {
+      console.error('[dfe-autocomplete] Failed to initialize:', error)
+    }
   });
 }
 

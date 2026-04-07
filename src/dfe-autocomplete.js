@@ -1,8 +1,9 @@
 import accessibleAutocomplete from 'accessible-autocomplete'
 import sort from './sort'
+import { escapeHtml } from './utils/escape'
+import { createLogger } from './utils/logger'
 
-let minLength;
-let tracker;
+const instances = new WeakMap()
 
 const nullTracker = {
   sendTrackingEvent: function() { },
@@ -12,10 +13,15 @@ const nullTracker = {
 const defaultValueOption = component => component.getAttribute('data-default-value') || ''
 
 const suggestion = (value, options) => {
-  const option = options.find(o => o.name === value || o.text == value )
+  const option = options.find(o => o.name === value || o.text == value)
   if (option) {
-    const html = option.append ? `<span>${value}</span> ${option.append}` : `<span>${value}</span>`
-    return option.hint ? `${html}<br>${option.hint}` : html
+    const escapedValue = escapeHtml(value)
+    const escapedAppend = escapeHtml(option.append)
+    const escapedHint = escapeHtml(option.hint)
+    const html = escapedAppend
+      ? `<span>${escapedValue}</span> ${escapedAppend}`
+      : `<span>${escapedValue}</span>`
+    return escapedHint ? `${html}<br>${escapedHint}` : html
   } else {
     return `<span>No results found</span>`
   }
@@ -74,9 +80,19 @@ function generateAutocompleteName(selectEl, libraryOptions) {
 
 export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
   const selectEl = component.querySelector('select')
+
+  if (!selectEl) {
+    console.warn('[dfe-autocomplete] No <select> found inside element. The native select will remain usable.')
+    return null
+  }
+
+  const debug = component.getAttribute('data-debug') === 'true'
+  const log = createLogger(debug)
+
   const selectOptions = Array.from(selectEl.options)
   const options = selectOptions.map(o => enhanceOption(o))
-  const inError = component.querySelector('div.govuk-form-group').className.includes('error')
+  const formGroup = component.querySelector('div.govuk-form-group')
+  const inError = formGroup ? formGroup.className.includes('error') : false
   const inputValue = defaultValueOption(component)
   const tracker = libraryOptions.tracker || nullTracker
 
@@ -88,6 +104,7 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
     selectElement: selectEl,
     trackerObject: tracker,
     onConfirm: (val) => {
+      log.log('Selected:', val)
       tracker.sendTrackingEvent(val, selectEl.name)
       const selectedOption = [].filter.call(selectOptions, option => (option.textContent || option.innerText) === val)[0]
       if (selectedOption) selectedOption.selected = true
@@ -95,7 +112,9 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
     source: (query, populateResults) => {
       if (/\S/.test(query)) {
         tracker.trackSearch(query)
-        populateResults(sort(query, options))
+        const results = sort(query, options)
+        log.log('Search:', query, '\u2192', results.length, 'results')
+        populateResults(results)
       }
     },
     templates: { suggestion: (value) => suggestion(value, options) }
@@ -106,7 +125,26 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
 
   accessibleAutocomplete.enhanceSelectElement(autocompleteOptions)
 
+  log.log('Initialized on', selectEl.name, 'with', options.length, 'options')
+
   if (inError) {
-    component.querySelector('input').value = inputValue
+    const inputEl = component.querySelector('input')
+    if (inputEl) inputEl.value = inputValue
   }
+
+  const autocompleteWrapper = component.querySelector('.autocomplete__wrapper')
+
+  const instance = {
+    destroy () {
+      if (autocompleteWrapper) autocompleteWrapper.remove()
+      selectEl.style.display = ''
+      if (selectEl.id.endsWith('-select')) {
+        selectEl.id = selectEl.id.replace(/-select$/, '')
+      }
+      instances.delete(component)
+    }
+  }
+
+  instances.set(component, instance)
+  return instance
 }

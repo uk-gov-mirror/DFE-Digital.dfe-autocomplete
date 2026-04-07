@@ -1,9 +1,9 @@
-import accessibleAutocomplete from 'accessible-autocomplete'
 import defaultSort, { createSort } from './sort'
 import { createRemoveStopWords } from './sort/stop_words'
 import { escapeHtml } from './utils/escape'
 import { createLogger } from './utils/logger'
 import { EventEmitter } from './events'
+import { AccessibleAutocompleteEngine } from './engines/accessible-autocomplete'
 
 const instances = new WeakMap()
 
@@ -88,7 +88,7 @@ function generateAutocompleteName(selectEl, libraryOptions) {
   }
 }
 
-export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
+export const setupAccessibleAutoComplete = (component, libraryOptions = {}, EngineClass = AccessibleAutocompleteEngine) => {
   const selectEl = component.querySelector('select')
 
   if (!selectEl) {
@@ -157,27 +157,23 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
   const autocompleteOptions = Object.assign({}, defaultOptions, libraryOptions)
   autocompleteOptions.name = generateAutocompleteName(selectEl, libraryOptions)
 
-  accessibleAutocomplete.enhanceSelectElement(autocompleteOptions)
+  const engine = new EngineClass(component, autocompleteOptions)
+  engine.initialize()
 
   log.log('Initialized on', selectEl.name, 'with', options.length, 'options')
 
   if (inError) {
-    const inputEl = component.querySelector('input')
-    if (inputEl) inputEl.value = inputValue
+    engine.setValue(inputValue)
   }
-
-  const autocompleteWrapper = component.querySelector('.autocomplete__wrapper')
 
   const instance = {
     on: (event, cb) => emitter.on(event, cb),
     off: (event, cb) => emitter.off(event, cb),
+    getValue: () => engine.getValue(),
+    setValue: (value) => engine.setValue(value),
     destroy () {
       emitter.emit('destroy')
-      if (autocompleteWrapper) autocompleteWrapper.remove()
-      selectEl.style.display = ''
-      if (selectEl.id.endsWith('-select')) {
-        selectEl.id = selectEl.id.replace(/-select$/, '')
-      }
+      engine.destroy()
       instances.delete(component)
     }
   }

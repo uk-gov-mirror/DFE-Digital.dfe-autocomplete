@@ -1,5 +1,6 @@
 import { setupAccessibleAutoComplete } from './dfe-autocomplete'
 import { AccessibleAutocompleteEngine } from './engines/accessible-autocomplete'
+import { registerPlugin } from './plugins'
 
 let CurrentEngine = AccessibleAutocompleteEngine
 
@@ -21,6 +22,8 @@ function dfeAutocomplete (libraryOptions = {}) {
 export function dfeAutocompleteField (element, options = {}) {
   return setupAccessibleAutoComplete(element, options, CurrentEngine)
 }
+
+dfeAutocomplete.use = (plugin) => registerPlugin(plugin)
 
 export { AccessibleAutocompleteEngine }
 export { BaseEngine } from './engines/base'

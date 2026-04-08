@@ -67,7 +67,7 @@ describe('setupAccessibleAutoComplete', () => {
       expect(populateResults).toHaveBeenCalled()
       const results = populateResults.mock.calls[0][0]
       // "math" is a synonym of Mathematics, so it should appear
-      expect(results).toContain('Mathematics')
+      expect(results.map(r => r.name)).toContain('Mathematics')
     })
 
     it('reads data-append', () => {
@@ -98,7 +98,7 @@ describe('setupAccessibleAutoComplete', () => {
       const populateResults = vi.fn()
       options.source('mat', populateResults)
       const results = populateResults.mock.calls[0][0]
-      expect(results).toContain('Mathematics')
+      expect(results.map(r => r.name)).toContain('Mathematics')
     })
 
     it('defaults boost to 1 when not specified', () => {

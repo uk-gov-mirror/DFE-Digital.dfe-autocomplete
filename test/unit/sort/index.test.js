@@ -67,7 +67,8 @@ describe('weight calculation through pipeline', () => {
     const results = sort('london', [
       { name: 'London', synonyms: [], boost: 1 }
     ])
-    expect(results).toContain('London')
+    expect(results[0].name).toBe('London')
+    expect(results[0].weight).toBe(100)
   })
 
   it('boost multiplier affects ordering', () => {
@@ -75,8 +76,8 @@ describe('weight calculation through pipeline', () => {
       { name: 'Alpha A', synonyms: [], boost: 1 },
       { name: 'Alpha B', synonyms: [], boost: 2 }
     ])
-    expect(results[0]).toBe('Alpha B')
-    expect(results[1]).toBe('Alpha A')
+    expect(results[0].name).toBe('Alpha B')
+    expect(results[1].name).toBe('Alpha A')
   })
 })
 
@@ -134,9 +135,9 @@ describe('sort (default export)', () => {
     { name: 'Bristol', synonyms: [], boost: 1 },
   ]
 
-  it('returns matching options sorted by relevance', () => {
+  it('returns matching option objects sorted by relevance', () => {
     const results = sort('london', options)
-    expect(results[0]).toBe('London')
+    expect(results[0].name).toBe('London')
   })
 
   it('filters out non-matching options', () => {
@@ -144,14 +145,17 @@ describe('sort (default export)', () => {
     expect(results).toEqual([])
   })
 
-  it('returns results as name strings', () => {
+  it('returns option objects with name and weight', () => {
     const results = sort('lon', options)
-    results.forEach(r => expect(typeof r).toBe('string'))
+    results.forEach(r => {
+      expect(r).toHaveProperty('name')
+      expect(r).toHaveProperty('weight')
+    })
   })
 
   it('matches via synonyms', () => {
     const results = sort('big smoke', options)
-    expect(results).toContain('London')
+    expect(results.map(r => r.name)).toContain('London')
   })
 
   it('applies boost multiplier to ordering', () => {
@@ -160,9 +164,8 @@ describe('sort (default export)', () => {
       { name: 'Alpha College', synonyms: [], boost: 2 },
     ]
     const results = sort('alpha', boostedOptions)
-    // Both start with "alpha" (weight 60), but College has boost 2 → weight 120 vs 60
-    expect(results[0]).toBe('Alpha College')
-    expect(results[1]).toBe('Alpha School')
+    expect(results[0].name).toBe('Alpha College')
+    expect(results[1].name).toBe('Alpha School')
   })
 
   it('sorts alphabetically for equal weights', () => {
@@ -171,8 +174,8 @@ describe('sort (default export)', () => {
       { name: 'Alpha School', synonyms: [], boost: 1 },
     ]
     const results = sort('school', equalOptions)
-    expect(results[0]).toBe('Alpha School')
-    expect(results[1]).toBe('Zebra School')
+    expect(results[0].name).toBe('Alpha School')
+    expect(results[1].name).toBe('Zebra School')
   })
 
   it('handles empty options list', () => {

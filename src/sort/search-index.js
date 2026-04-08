@@ -66,12 +66,11 @@ export function createIndexedSort (options, { clean, removeStopWords, calculateW
     const cleanQuery = cleanFn(query)
 
     return index.search(query)
-      .map(option => ({
-        name: option.name,
-        weight: calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
-      }))
+      .map(option => {
+        option.weight = calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
+        return option
+      })
       .filter(o => o.weight > 0)
       .sort(byWeightThenAlphabetically)
-      .map(o => o.name)
   }
 }

@@ -26,7 +26,6 @@ function buildPipeline (cleanFn, cleanseOptionFn, calculateWeightFn) {
       })
       .filter(hasWeight)
       .sort(byWeightThenAlphabetically)
-      .map(optionName)
   }
 }
 

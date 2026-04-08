@@ -24,7 +24,7 @@ function createAsyncHandler (fetchFn, debounceMs, { tracker, log, emitter, plugi
         setAsyncOptions(results)
 
         const names = results.map(r => r.name)
-        log.log('Search:', query, '\u2192', names.length, 'results')
+        log.log('Search:', query, '→', names.length, 'results')
         emitter.emit('search', { query, results: names })
         plugins.forEach(p => p.onSearch?.({ query, results: names }))
         emitter.emit('loading', { loading: false })
@@ -52,7 +52,7 @@ function createLocalSource (sortFn, options, { tracker, log, emitter, plugins, m
 
     tracker.trackSearch(query)
     const results = sortFn(query, options).slice(0, maxResults)
-    log.log('Search:', query, '\u2192', results.length, 'results')
+    log.log('Search:', query, '→', results.length, 'results')
     emitter.emit('search', { query, results })
     plugins.forEach(p => p.onSearch?.({ query, results }))
     populateResults(results)

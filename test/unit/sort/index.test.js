@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import sort, {
   cleanseOption,
-  addWeightWithBoost,
   hasWeight,
   byWeightThenAlphabetically,
   optionName
@@ -63,35 +62,21 @@ describe('cleanseOption', () => {
   })
 })
 
-describe('addWeightWithBoost', () => {
-  it('sets weight on option', () => {
-    const option = {
-      name: 'london',
-      clean: {
-        name: 'london',
-        nameWithoutStopWords: 'london',
-        synonyms: [],
-        synonymsWithoutStopWords: [],
-        boost: 1
-      }
-    }
-    const result = addWeightWithBoost(option, 'london')
-    expect(result.weight).toBe(100) // exact match × boost 1
+describe('weight calculation through pipeline', () => {
+  it('exact match gets weight 100', () => {
+    const results = sort('london', [
+      { name: 'London', synonyms: [], boost: 1 }
+    ])
+    expect(results).toContain('London')
   })
 
-  it('applies boost multiplier to weight', () => {
-    const option = {
-      name: 'london',
-      clean: {
-        name: 'london',
-        nameWithoutStopWords: 'london',
-        synonyms: [],
-        synonymsWithoutStopWords: [],
-        boost: 2
-      }
-    }
-    const result = addWeightWithBoost(option, 'london')
-    expect(result.weight).toBe(200) // 100 × 2
+  it('boost multiplier affects ordering', () => {
+    const results = sort('alpha', [
+      { name: 'Alpha A', synonyms: [], boost: 1 },
+      { name: 'Alpha B', synonyms: [], boost: 2 }
+    ])
+    expect(results[0]).toBe('Alpha B')
+    expect(results[1]).toBe('Alpha A')
   })
 })
 

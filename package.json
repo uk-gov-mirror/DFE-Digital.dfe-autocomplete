@@ -1,13 +1,18 @@
 {
   "name": "dfe-autocomplete",
-  "version": "0.2.1",
-  "description": "DfE Autocomplete built on top of accessible autocomplete lib",
+  "version": "1.0.0",
+  "description": "Accessible autocomplete for the Department for Education, with intelligent sorting, synonym matching, and weighted scoring",
   "main": "dist/dfe-autocomplete.min.js",
   "style": "dist/dfe-autocomplete.min.css",
   "sass": "src/dfe-autocomplete.scss",
-  "directories": {
-    "lib": "lib"
+  "exports": {
+    ".": "./dist/dfe-autocomplete.min.js",
+    "./stimulus": "./src/stimulus/dfe-autocomplete-controller.js"
   },
+  "files": [
+    "dist/",
+    "src/"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:unit": "vitest run test/unit/",
@@ -16,8 +21,7 @@
     "test:contracts": "vitest run test/contracts/",
     "test:watch": "vitest",
     "compile:js": "cross-env NODE_ENV=production webpack --progress --stats-modules",
-    "compile": "npm run -s 'compile:js'",
-    "standard": "standard"
+    "compile": "npm run -s 'compile:js'"
   },
   "repository": {
     "type": "git",
@@ -29,11 +33,23 @@
     "a11y",
     "accessibility",
     "autocomplete",
-    "component",
-    "plugin",
+    "govuk",
+    "dfe",
+    "education",
     "typeahead",
-    "widget"
+    "stimulus"
   ],
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@hotwired/stimulus": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/plugin-proposal-decorators": "^7.25.9",
@@ -64,9 +80,6 @@
     "url": "https://github.com/DFE-Digital/dfe-autocomplete/issues"
   },
   "homepage": "https://github.com/DFE-Digital/dfe-autocomplete#readme",
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "dependencies": {
     "accessible-autocomplete": "^3.0.1"
   }

@@ -1,6 +1,6 @@
 import defaultClean from './clean'
-import defaultRemoveStopWords from './stop_words'
 import defaultCalculateWeight from './calculateWeight'
+import { createOptionCleanser } from './cleanse'
 import { byWeightThenAlphabetically } from './index'
 
 function intersection (setA, setB) {
@@ -14,29 +14,20 @@ function intersection (setA, setB) {
 export class SearchIndex {
   constructor (options, { clean, removeStopWords } = {}) {
     this.cleanFn = clean || defaultClean
-    this.removeStopWordsFn = removeStopWords || defaultRemoveStopWords
     this.options = options
     this.index = new Map()
+
+    const cleanseOptionFn = createOptionCleanser(this.cleanFn, removeStopWords)
+    options.forEach(cleanseOptionFn)
     this.build()
   }
 
   build () {
     for (const option of this.options) {
-      // Pre-compute clean data
-      const cleanName = this.cleanFn(option.name)
-      const synonyms = (option.synonyms || []).map(s => this.cleanFn(s))
-
-      option.clean = {
-        name: cleanName,
-        nameWithoutStopWords: this.removeStopWordsFn(option.name),
-        synonyms,
-        synonymsWithoutStopWords: synonyms.map(s => this.removeStopWordsFn(s)),
-        boost: option.boost || 1
-      }
-
-      const nameWords = this.tokenize(cleanName)
-      const synonymWords = synonyms.flatMap(s => this.tokenize(s))
-      const allWords = [...nameWords, ...synonymWords]
+      const allWords = [
+        ...this.tokenize(option.clean.name),
+        ...option.clean.synonyms.flatMap(s => this.tokenize(s))
+      ]
 
       for (const word of allWords) {
         for (let i = 1; i <= word.length; i++) {
@@ -73,13 +64,12 @@ export function createIndexedSort (options, { clean, removeStopWords, calculateW
 
   return (query) => {
     const cleanQuery = cleanFn(query)
-    const candidates = index.search(query)
 
-    return candidates
-      .map(option => {
-        const weight = calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
-        return { name: option.name, weight }
-      })
+    return index.search(query)
+      .map(option => ({
+        name: option.name,
+        weight: calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
+      }))
       .filter(o => o.weight > 0)
       .sort(byWeightThenAlphabetically)
       .map(o => o.name)

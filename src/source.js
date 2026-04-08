@@ -23,12 +23,11 @@ function createAsyncHandler (fetchFn, debounceMs, { tracker, log, emitter, plugi
         const results = normalizeResults(limited)
         setAsyncOptions(results)
 
-        const names = results.map(r => r.name)
-        log.log('Search:', query, '→', names.length, 'results')
-        emitter.emit('search', { query, results: names })
-        plugins.forEach(p => p.onSearch?.({ query, results: names }))
+        log.log('Search:', query, '→', results.length, 'results')
+        emitter.emit('search', { query, results })
+        plugins.forEach(p => p.onSearch?.({ query, results }))
         emitter.emit('loading', { loading: false })
-        populateResults(names)
+        populateResults(results)
       } catch (error) {
         log.error('Search failed:', error)
         emitter.emit('loading', { loading: false })

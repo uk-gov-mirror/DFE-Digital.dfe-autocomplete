@@ -6,7 +6,7 @@ import { enhanceOption, getDefaultValue, generateFieldName } from './utils/optio
 import { EventEmitter } from './events'
 import { AccessibleAutocompleteEngine } from './engines/accessible-autocomplete'
 import { getGlobalPlugins } from './plugins'
-import { createSuggestionRenderer } from './templates'
+import { createSuggestionRenderer, inputValue as resolveInputValue } from './templates'
 import { buildSource } from './source'
 
 const instances = new WeakMap()
@@ -79,27 +79,37 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}, Engi
     getCurrentQuery: () => currentQuery
   })
 
-  // Exclude options consumed by dfe-autocomplete so they don't leak to the engine
-  const { source, plugins: instancePlugins, ...restLibraryOptions } = libraryOptions
+  // Strip DFE-only options so they don't leak to accessible-autocomplete
+  const {
+    source: _source, plugins: _plugins, tracker: _tracker,
+    sort: _sort, stopWords: _stopWords, calculateWeight: _calcWeight, clean: _clean,
+    maxResults: _maxResults, highlightMatches: _highlight, showAllOnFocus: _showAll,
+    useSearchIndex: _useIndex,
+    ...passthroughOptions
+  } = libraryOptions
+
   const autocompleteOptions = Object.assign({
     autoselect: true,
     defaultValue: inError ? '' : inputValue,
     minLength: 1,
-    rawAttribute: false,
     showAllValues: libraryOptions.showAllOnFocus || false,
     selectElement: selectEl,
     trackerObject: tracker,
     onConfirm: (val) => {
-      log.log('Selected:', val)
-      emitter.emit('select', { value: val })
-      plugins.forEach(p => p.onSelect?.({ value: val }))
-      tracker.sendTrackingEvent(val, selectEl.name)
-      const selectedOption = selectOptions.find(o => (o.textContent || o.innerText) === val)
+      const name = resolveInputValue(val)
+      log.log('Selected:', name)
+      emitter.emit('select', { value: name })
+      plugins.forEach(p => p.onSelect?.({ value: name }))
+      tracker.sendTrackingEvent(name, selectEl.name)
+      const selectedOption = selectOptions.find(o => (o.textContent || o.innerText) === name)
       if (selectedOption) selectedOption.selected = true
     },
     source: sourceCallback,
-    templates: { suggestion: suggestionRenderer }
-  }, restLibraryOptions)
+    templates: {
+      inputValue: resolveInputValue,
+      suggestion: suggestionRenderer
+    }
+  }, passthroughOptions)
 
   autocompleteOptions.name = generateFieldName(selectEl, autocompleteOptions)
 

@@ -54,7 +54,7 @@ describe('Replaceable functions', () => {
       // With custom stop words including "university", the matching may differ
       opts.source('london', populateResults)
       expect(populateResults).toHaveBeenCalled()
-      expect(populateResults.mock.calls[0][0]).toContain('University of London')
+      expect(populateResults.mock.calls[0][0].map(r => r.name)).toContain('University of London')
     })
   })
 
@@ -79,8 +79,8 @@ describe('Replaceable functions', () => {
       opts.source('anything', populateResults)
 
       const results = populateResults.mock.calls[0][0]
-      expect(results).toContain('Alpha')
-      expect(results).not.toContain('Beta')
+      expect(results.map(r => r.name)).toContain('Alpha')
+      expect(results.map(r => r.name)).not.toContain('Beta')
     })
   })
 
@@ -102,7 +102,7 @@ describe('Replaceable functions', () => {
       opts.source('café', populateResults)
 
       expect(populateResults).toHaveBeenCalled()
-      expect(populateResults.mock.calls[0][0]).toContain('Café')
+      expect(populateResults.mock.calls[0][0].map(r => r.name)).toContain('Café')
     })
   })
 
@@ -117,7 +117,7 @@ describe('Replaceable functions', () => {
       ]
 
       const results = sortFn('london', options)
-      expect(results[0]).toBe('London')
+      expect(results[0].name).toBe('London')
     })
 
     it('uses default functions when not overridden', () => {
@@ -128,7 +128,7 @@ describe('Replaceable functions', () => {
       ]
 
       const results = sortFn('london', options)
-      expect(results).toContain('London')
+      expect(results.map(r => r.name)).toContain('London')
     })
   })
 })

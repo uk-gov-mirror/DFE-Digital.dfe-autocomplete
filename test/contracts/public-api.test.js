@@ -127,7 +127,7 @@ describe('Public API Contract', () => {
       const populateResults = vi.fn()
       options.source('alias2', populateResults)
       expect(populateResults).toHaveBeenCalled()
-      expect(populateResults.mock.calls[0][0]).toContain('Test')
+      expect(populateResults.mock.calls[0][0].map(r => r.name)).toContain('Test')
     })
 
     it('reads data-append', () => {
@@ -170,7 +170,7 @@ describe('Public API Contract', () => {
       options.source('alpha', populateResults)
       const results = populateResults.mock.calls[0][0]
       // Boosted option should come first
-      expect(results[0]).toBe('Alpha')
+      expect(results[0].name).toBe('Alpha')
     })
   })
 })

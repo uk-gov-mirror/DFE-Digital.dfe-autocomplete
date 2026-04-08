@@ -35,7 +35,10 @@ describe('Async source', () => {
       })
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Result 1', 'Result 2'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Result 1', text: 'Result 1' },
+          { name: 'Result 2', text: 'Result 2' }
+        ])
       })
     })
 
@@ -50,7 +53,10 @@ describe('Async source', () => {
       opts.source('test', populateResults)
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Alpha', 'Beta'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Alpha', text: 'Alpha' },
+          { name: 'Beta', text: 'Beta' }
+        ])
       })
     })
 
@@ -152,7 +158,9 @@ describe('Async source', () => {
       }, { timeout: 500 })
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['London'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'London', text: 'London' }
+        ])
       })
     })
 
@@ -176,7 +184,10 @@ describe('Async source', () => {
       opts.source('test', populateResults)
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Alpha', 'Beta'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Alpha', text: 'Alpha' },
+          { name: 'Beta', text: 'Beta' }
+        ])
       }, { timeout: 500 })
     })
 

@@ -29,8 +29,7 @@ function buildSortFunction (options, libraryOptions) {
   }
 
   if (libraryOptions.useSearchIndex) {
-    const indexedSort = createIndexedSort(options, customConfig)
-    return (query) => indexedSort(query)
+    return createIndexedSort(options, customConfig)
   }
 
   return createSort(customConfig)

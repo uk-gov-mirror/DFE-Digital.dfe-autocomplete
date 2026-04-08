@@ -1,11 +1,12 @@
 export function enhanceOption (option) {
+  const synonymsAttr = option.getAttribute('data-synonyms')
   return {
     name: option.label,
-    synonyms: option.getAttribute('data-synonyms') ? option.getAttribute('data-synonyms').split('|') : [],
+    synonyms: synonymsAttr ? synonymsAttr.split('|') : [],
     append: option.getAttribute('data-append'),
     hint: option.getAttribute('data-hint'),
     boost: parseFloat(option.getAttribute('data-boost')) || 1,
-    text: option.textContent || option.innerText
+    text: option.textContent || ''
   }
 }
 

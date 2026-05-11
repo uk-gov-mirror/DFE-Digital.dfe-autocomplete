@@ -42,4 +42,9 @@ describe('clean', () => {
   it('preserves numbers', () => {
     expect(clean('Room 101')).toBe('room 101')
   })
+
+  it('preserves whitespace runs between words', () => {
+    expect(clean('  hello        world')).toBe('hello        world')
+    expect(clean('hello\tworld')).toBe('hello\tworld')
+  })
 })

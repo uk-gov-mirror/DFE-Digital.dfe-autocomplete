@@ -1,4 +1,4 @@
-export const defaultStopWords = ['the', 'of', 'in', 'and', 'at', '&', 'with']
+const defaultStopWords = ['the', 'of', 'in', 'and', 'at', '&', 'with']
 
 export function createRemoveStopWords (words) {
   return (text) => {

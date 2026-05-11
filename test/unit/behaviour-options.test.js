@@ -88,7 +88,7 @@ describe('Behaviour options', () => {
 
       // Now render suggestion — should highlight the matched text
       const html = opts.templates.suggestion('Mathematics')
-      expect(html).toContain('<strong>Math</strong>')
+      expect(html).toContain('<mark>Math</mark>')
       expect(html).toContain('ematics')
     })
 
@@ -106,7 +106,7 @@ describe('Behaviour options', () => {
       opts.source('math', populateResults)
 
       const html = opts.templates.suggestion('Mathematics')
-      expect(html).not.toContain('<strong>')
+      expect(html).not.toContain('<mark>')
       expect(html).toContain('<span>Mathematics</span>')
     })
 
@@ -141,7 +141,7 @@ describe('Behaviour options', () => {
       opts.source('MATH', populateResults)
 
       const html = opts.templates.suggestion('Mathematics')
-      expect(html).toContain('<strong>Math</strong>')
+      expect(html).toContain('<mark>Math</mark>')
     })
   })
 })

@@ -15,7 +15,7 @@ function highlightMatch (text, query) {
   parts.forEach((part, i) => {
     result += escapeHtml(part)
     if (i < matches.length) {
-      result += `<strong>${escapeHtml(matches[i])}</strong>`
+      result += `<mark>${escapeHtml(matches[i])}</mark>`
     }
   })
   return result

@@ -121,7 +121,7 @@ describe('DfeAutocompleteController', () => {
     const populateResults = vi.fn()
     opts.source('math', populateResults)
     const html = opts.templates.suggestion('Mathematics')
-    expect(html).toContain('<strong>')
+    expect(html).toContain('<mark>')
   })
 
   it('cleans up on disconnect', async () => {

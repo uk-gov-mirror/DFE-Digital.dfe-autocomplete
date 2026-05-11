@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { Application } from '@hotwired/stimulus'
-import { DfeAutocompleteController } from '../../src/stimulus/dfe-autocomplete-controller'
+import { DfeAutocompleteController } from '@/stimulus/dfe-autocomplete-controller'
 
 // Mock accessible-autocomplete so we can inspect options passed
 vi.mock('accessible-autocomplete', () => ({

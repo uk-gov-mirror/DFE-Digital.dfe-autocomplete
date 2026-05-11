@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { AccessibleAutocompleteEngine } from '../../../src/engines/accessible-autocomplete'
-import { createAutocompleteFixture, cleanupFixtures } from '../../helpers/dom'
+import { AccessibleAutocompleteEngine } from '@/engines/accessible-autocomplete'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
 describe('AccessibleAutocompleteEngine', () => {
   afterEach(() => {

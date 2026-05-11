@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { SearchIndex, createIndexedSort } from '../../src/sort/search-index'
-import { createAutocompleteFixture, cleanupFixtures } from '../helpers/dom'
+import { SearchIndex, createIndexedSort } from '@/sort/search-index'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
 vi.mock('accessible-autocomplete', () => ({
   default: { enhanceSelectElement: vi.fn() }
 }))
 
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('SearchIndex', () => {

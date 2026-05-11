@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { cleanupFixtures } from '../helpers/dom'
-import { BaseEngine } from '../../src/engines/base'
+import { cleanupFixtures } from 'test-helpers/dom'
+import { BaseEngine } from '@/engines/base'
 
 // Use a fresh import for each test to avoid state leaking
 let setEngine, getEngine, AccessibleAutocompleteEngine

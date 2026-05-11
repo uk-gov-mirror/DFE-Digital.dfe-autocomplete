@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { createLogger } from '../../../src/utils/logger'
+import { createLogger } from '@/utils/logger'
 
 describe('createLogger', () => {
   describe('when enabled', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import clean from '../../../src/sort/clean'
+import clean from '@/sort/clean'
 
 describe('clean', () => {
   it('trims whitespace', () => {

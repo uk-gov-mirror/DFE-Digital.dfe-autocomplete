@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { createAutocompleteFixture, cleanupFixtures } from '../helpers/dom'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
 // Mock accessible-autocomplete to avoid Preact rendering in unit tests
 vi.mock('accessible-autocomplete', () => ({
@@ -8,7 +8,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('setupAccessibleAutoComplete', () => {

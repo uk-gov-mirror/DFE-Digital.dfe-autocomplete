@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { EventEmitter } from '../../src/events'
-import { cleanupFixtures } from '../helpers/dom'
+import { EventEmitter } from '@/events'
+import { cleanupFixtures } from 'test-helpers/dom'
 
 describe('EventEmitter', () => {
   it('calls listener when event is emitted', () => {
@@ -80,7 +80,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Autocomplete instance events', () => {

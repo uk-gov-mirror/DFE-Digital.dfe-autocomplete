@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { createAutocompleteFixture, cleanupFixtures } from '../helpers/dom'
-import { registerPlugin, getGlobalPlugins, clearGlobalPlugins } from '../../src/plugins'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
+import { registerPlugin, getGlobalPlugins, clearGlobalPlugins } from '@/plugins'
 
 vi.mock('accessible-autocomplete', () => ({
   default: {
@@ -8,7 +8,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Plugin system', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { cleanupFixtures } from '../helpers/dom'
+import { cleanupFixtures } from 'test-helpers/dom'
 
 vi.mock('accessible-autocomplete', () => ({
   default: {
@@ -7,7 +7,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 function createDebugFixture (debug = false) {

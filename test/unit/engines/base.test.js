@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { BaseEngine } from '../../../src/engines/base'
+import { BaseEngine } from '@/engines/base'
 
 describe('BaseEngine', () => {
   it('stores element and options', () => {

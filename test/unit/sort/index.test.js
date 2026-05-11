@@ -4,7 +4,7 @@ import sort, {
   hasWeight,
   byWeightThenAlphabetically,
   optionName
-} from '../../../src/sort/index'
+} from '@/sort/index'
 
 describe('cleanseOption', () => {
   it('creates clean object with processed name', () => {

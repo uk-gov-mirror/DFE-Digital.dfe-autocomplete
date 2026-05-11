@@ -1,5 +1,8 @@
 import { escapeHtml } from './utils/escape'
 
+// Escape regex metacharacters so a user-supplied string can be used as a literal
+// inside `new RegExp(...)`. The character class lists every special character;
+// `\\$&` is a backreference that re-emits the matched character prefixed by `\`.
 function escapeRegExp (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

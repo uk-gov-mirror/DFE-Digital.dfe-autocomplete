@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { createAutocompleteFixture, cleanupFixtures } from '../helpers/dom'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
 // Mock accessible-autocomplete to avoid Preact rendering
 vi.mock('accessible-autocomplete', () => ({
@@ -8,7 +8,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import dfeAutocomplete, { dfeAutocompleteField } from '../../src/wrapper'
+import dfeAutocomplete, { dfeAutocompleteField } from '@/wrapper'
 import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Public API Contract', () => {

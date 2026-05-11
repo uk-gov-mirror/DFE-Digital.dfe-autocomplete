@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { createAutocompleteFixture, cleanupFixtures } from '../helpers/dom'
-import { setupAccessibleAutoComplete } from '../../src/dfe-autocomplete'
+import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
 
 /**
  * Destroy tests use the real accessible-autocomplete (no mocking)

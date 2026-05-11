@@ -39,7 +39,8 @@ describe('Error handling', () => {
       setupAccessibleAutoComplete(container)
 
       expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[dfe-autocomplete]')
+        '[dfe-autocomplete]',
+        expect.stringContaining('No <select> found')
       )
     })
 

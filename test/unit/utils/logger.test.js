@@ -35,7 +35,7 @@ describe('createLogger', () => {
   })
 
   describe('when disabled', () => {
-    it('does not log', () => {
+    it('does not log debug traces', () => {
       const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const log = createLogger(false)
 
@@ -45,23 +45,23 @@ describe('createLogger', () => {
       spy.mockRestore()
     })
 
-    it('does not warn', () => {
+    it('still warns (warnings are not debug-gated)', () => {
       const spy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const log = createLogger(false)
 
-      log.warn('should not appear')
+      log.warn('warning')
 
-      expect(spy).not.toHaveBeenCalled()
+      expect(spy).toHaveBeenCalledWith('[dfe-autocomplete]', 'warning')
       spy.mockRestore()
     })
 
-    it('does not error', () => {
+    it('still errors (errors are not debug-gated)', () => {
       const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const log = createLogger(false)
 
-      log.error('should not appear')
+      log.error('error')
 
-      expect(spy).not.toHaveBeenCalled()
+      expect(spy).toHaveBeenCalledWith('[dfe-autocomplete]', 'error')
       spy.mockRestore()
     })
   })

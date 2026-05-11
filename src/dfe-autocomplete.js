@@ -79,15 +79,15 @@ function generateAutocompleteName(selectEl, libraryOptions) {
 }
 
 export const setupAccessibleAutoComplete = (component, libraryOptions = {}) => {
+  const debug = component.getAttribute('data-debug') === 'true'
+  const log = createLogger(debug)
   const selectEl = component.querySelector('select')
 
   if (!selectEl) {
-    console.warn('[dfe-autocomplete] No <select> found inside element. The native select will remain usable.')
+    log.warn('No <select> found inside element. The native select will remain usable.')
     return null
   }
 
-  const debug = component.getAttribute('data-debug') === 'true'
-  const log = createLogger(debug)
 
   const selectOptions = Array.from(selectEl.options)
   const options = selectOptions.map(o => enhanceOption(o))

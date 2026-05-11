@@ -1,6 +1,6 @@
 import defaultClean from './clean'
 import defaultCalculateWeight from './calculateWeight'
-import { createOptionCleanser } from './cleanse'
+import { createNormaliser } from './cleanse'
 import { byWeightThenAlphabetically } from './index'
 
 function intersection (setA, setB) {
@@ -17,8 +17,8 @@ export class SearchIndex {
     this.options = options
     this.index = new Map()
 
-    const cleanseOptionFn = createOptionCleanser(this.cleanFn, removeStopWords)
-    options.forEach(cleanseOptionFn)
+    const normaliseFn = createNormaliser(this.cleanFn, removeStopWords)
+    options.forEach(normaliseFn)
     this.build()
   }
 

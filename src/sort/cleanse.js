@@ -1,7 +1,7 @@
 import defaultClean from './clean'
 import defaultRemoveStopWords from './stop_words'
 
-export function createOptionCleanser (cleanFn = defaultClean, removeStopWordsFn = defaultRemoveStopWords) {
+export function createNormaliser (cleanFn = defaultClean, removeStopWordsFn = defaultRemoveStopWords) {
   return (option) => {
     const synonyms = (option.synonyms || []).map(cleanFn)
 
@@ -17,4 +17,4 @@ export function createOptionCleanser (cleanFn = defaultClean, removeStopWordsFn 
   }
 }
 
-export const cleanseOption = createOptionCleanser()
+export const normalise = createNormaliser()

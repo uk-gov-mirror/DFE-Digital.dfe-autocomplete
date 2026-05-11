@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest'
 import sort, {
-  cleanseOption,
+  normalise,
   hasWeight,
   byWeightThenAlphabetically,
   optionName
 } from '@/sort/index'
 
-describe('cleanseOption', () => {
+describe('normalise', () => {
   it('creates clean object with processed name', () => {
     const option = { name: 'London', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.name).toBe('london')
     expect(result.clean.boost).toBe(1)
@@ -17,14 +17,14 @@ describe('cleanseOption', () => {
 
   it('cleans synonyms', () => {
     const option = { name: 'London', synonyms: ['Big Smoke', 'The Capital'], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonyms).toEqual(['big smoke', 'the capital'])
   })
 
   it('removes stop words from name', () => {
     const option = { name: 'The University of London', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.nameWithoutStopWords).not.toContain('The')
     expect(result.clean.nameWithoutStopWords).toContain('University')
@@ -33,7 +33,7 @@ describe('cleanseOption', () => {
 
   it('removes stop words from synonyms', () => {
     const option = { name: 'Test', synonyms: ['The College of Art'], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonymsWithoutStopWords.length).toBe(1)
     expect(result.clean.synonymsWithoutStopWords[0]).not.toContain('The')
@@ -41,21 +41,21 @@ describe('cleanseOption', () => {
 
   it('preserves boost value', () => {
     const option = { name: 'Test', synonyms: [], boost: 1.5 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.boost).toBe(1.5)
   })
 
   it('defaults boost to 1 when missing', () => {
     const option = { name: 'Test', synonyms: [] }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.boost).toBe(1)
   })
 
   it('handles empty synonyms array', () => {
     const option = { name: 'Test', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonyms).toEqual([])
     expect(result.clean.synonymsWithoutStopWords).toEqual([])

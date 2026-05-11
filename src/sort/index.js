@@ -1,6 +1,6 @@
 import defaultClean from './clean'
 import defaultCalculateWeight from './calculateWeight'
-import { cleanseOption, createOptionCleanser } from './cleanse'
+import { normalise, createNormaliser } from './cleanse'
 
 const hasWeight = (option) => option.weight > 0
 
@@ -14,12 +14,12 @@ const byWeightThenAlphabetically = (a, b) => {
 
 const optionName = (option) => option.name
 
-function buildPipeline (cleanFn, cleanseOptionFn, calculateWeightFn) {
+function buildPipeline (cleanFn, normaliseFn, calculateWeightFn) {
   return (query, options) => {
     const cleanQuery = cleanFn(query)
 
     return options
-      .map(cleanseOptionFn)
+      .map(normaliseFn)
       .map((option) => {
         option.weight = calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
         return option
@@ -32,12 +32,12 @@ function buildPipeline (cleanFn, cleanseOptionFn, calculateWeightFn) {
 export function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
   const cleanFn = clean || defaultClean
   const calculateWeightFn = calculateWeight || defaultCalculateWeight
-  const cleanseOptionFn = (clean || removeStopWords)
-    ? createOptionCleanser(cleanFn, removeStopWords)
-    : cleanseOption
+  const normaliseFn = (clean || removeStopWords)
+    ? createNormaliser(cleanFn, removeStopWords)
+    : normalise
 
-  return buildPipeline(cleanFn, cleanseOptionFn, calculateWeightFn)
+  return buildPipeline(cleanFn, normaliseFn, calculateWeightFn)
 }
 
-export { cleanseOption, hasWeight, byWeightThenAlphabetically, optionName }
-export default buildPipeline(defaultClean, cleanseOption, defaultCalculateWeight)
+export { normalise, hasWeight, byWeightThenAlphabetically, optionName }
+export default buildPipeline(defaultClean, normalise, defaultCalculateWeight)

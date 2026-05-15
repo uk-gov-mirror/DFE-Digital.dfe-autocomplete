@@ -71,6 +71,38 @@ describe('EventEmitter', () => {
     const emitter = new EventEmitter()
     expect(() => emitter.off('nonexistent', () => {})).not.toThrow()
   })
+
+  describe('inspection', () => {
+    it('eventNames() lists events that have listeners', () => {
+      const emitter = new EventEmitter()
+      emitter.on('search', () => {})
+      emitter.on('select', () => {})
+
+      expect(emitter.eventNames().sort()).toEqual(['search', 'select'])
+    })
+
+    it('eventNames() omits events whose listeners were all removed', () => {
+      const emitter = new EventEmitter()
+      const listener = () => {}
+      emitter.on('search', listener)
+      emitter.off('search', listener)
+
+      expect(emitter.eventNames()).toEqual([])
+    })
+
+    it('listenerCount() returns the number of listeners for an event', () => {
+      const emitter = new EventEmitter()
+      emitter.on('search', () => {})
+      emitter.on('search', () => {})
+
+      expect(emitter.listenerCount('search')).toBe(2)
+    })
+
+    it('listenerCount() returns 0 for an event with no listeners', () => {
+      const emitter = new EventEmitter()
+      expect(emitter.listenerCount('search')).toBe(0)
+    })
+  })
 })
 
 // Integration test: events on autocomplete instance
@@ -147,6 +179,20 @@ describe('Autocomplete instance events', () => {
     opts.onConfirm('Mathematics')
 
     expect(listener).toHaveBeenCalledWith({ value: 'Mathematics' })
+  })
+
+  it('throws when subscribing to an unknown event', () => {
+    const container = createFixture()
+    const instance = setupAccessibleAutoComplete(container)
+
+    expect(() => instance.on('serach', () => {})).toThrow(/Unknown event "serach"/)
+  })
+
+  it('throws when unsubscribing from an unknown event', () => {
+    const container = createFixture()
+    const instance = setupAccessibleAutoComplete(container)
+
+    expect(() => instance.off('bogus', () => {})).toThrow(/Unknown event "bogus"/)
   })
 
   it('emits destroy event', () => {

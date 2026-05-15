@@ -9,6 +9,14 @@ import { getGlobalPlugins } from './plugins'
 
 const instances = new WeakMap()
 
+const AUTOCOMPLETE_EVENTS = ['search', 'select', 'loading', 'error', 'destroy']
+
+function assertKnownEvent (event) {
+  if (!AUTOCOMPLETE_EVENTS.includes(event)) {
+    throw new Error(`[dfe-autocomplete] Unknown event "${event}". Valid events: ${AUTOCOMPLETE_EVENTS.join(', ')}`)
+  }
+}
+
 const nullTracker = {
   sendTrackingEvent: function() { },
   trackSearch: function() { }
@@ -154,7 +162,7 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}, Engi
           const results = await customSource(query)
           const limited = results.slice(0, maxResults)
           asyncOptions = limited.map(r => (typeof r === 'string' ? { name: r, text: r } : r))
-          log.log('Search:', query, '\u2192', limited.length, 'results')
+          log.log('Search:', query, '→', limited.length, 'results')
           emitter.emit('search', { query, results: limited })
           plugins.forEach(p => p.onSearch?.({ query, results: limited }))
           emitter.emit('loading', { loading: false })
@@ -195,7 +203,7 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}, Engi
           const results = await fetchSource(query)
           const limited = results.slice(0, maxResults)
           asyncOptions = limited.map(r => (typeof r === 'string' ? { name: r, text: r } : r))
-          log.log('Search:', query, '\u2192', limited.length, 'results')
+          log.log('Search:', query, '→', limited.length, 'results')
           emitter.emit('search', { query, results: limited })
           plugins.forEach(p => p.onSearch?.({ query, results: limited }))
           emitter.emit('loading', { loading: false })
@@ -215,7 +223,7 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}, Engi
       if (/\S/.test(query)) {
         tracker.trackSearch(query)
         const results = sortFn(query, options).slice(0, maxResults)
-        log.log('Search:', query, '\u2192', results.length, 'results')
+        log.log('Search:', query, '→', results.length, 'results')
         emitter.emit('search', { query, results })
         plugins.forEach(p => p.onSearch?.({ query, results }))
         populateResults(results)
@@ -261,8 +269,14 @@ export const setupAccessibleAutoComplete = (component, libraryOptions = {}, Engi
   }
 
   const instance = {
-    on: (event, cb) => emitter.on(event, cb),
-    off: (event, cb) => emitter.off(event, cb),
+    on: (event, cb) => {
+      assertKnownEvent(event)
+      return emitter.on(event, cb)
+    },
+    off: (event, cb) => {
+      assertKnownEvent(event)
+      emitter.off(event, cb)
+    },
     getValue: () => engine.getValue(),
     setValue: (value) => engine.setValue(value),
     destroy () {

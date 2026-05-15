@@ -15,4 +15,12 @@ export class EventEmitter {
   emit (event, data) {
     this.listeners[event]?.forEach(cb => cb(data))
   }
+
+  eventNames () {
+    return Object.keys(this.listeners).filter(event => this.listeners[event]?.length > 0)
+  }
+
+  listenerCount (event) {
+    return this.listeners[event]?.length || 0
+  }
 }

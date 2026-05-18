@@ -1,17 +1,18 @@
-const stopWords = ['the', 'of', 'in', 'and', 'at', '&', 'with']
+const defaultStopWords = ['the', 'of', 'in', 'and', 'at', '&', 'with']
 
-const removeStopWords = (text) => {
-  const isAllStopWords = text.trim().split(' ').every((word) => stopWords.includes(word))
+export function createRemoveStopWords (words) {
+  return (text) => {
+    const isAllStopWords = text.trim().split(' ').every((word) => words.includes(word))
 
-  // We don't want to filter out stops words too early.
-  // For example, the user could start off typing "the the"
-  // with the intention of entering "the theatre".
-  if (isAllStopWords) {
-    return text
+    if (isAllStopWords) {
+      return text
+    }
+
+    const regex = new RegExp(words.map(word => `(\\s+)?${word}(\\s+)?`).join('|'), 'gi')
+    return text.replace(regex, ' ').trim()
   }
-
-  const regex = new RegExp(stopWords.map(word => `(\\s+)?${word}(\\s+)?`).join('|'), 'gi')
-  return text.replace(regex, ' ').trim()
 }
+
+const removeStopWords = createRemoveStopWords(defaultStopWords)
 
 export default removeStopWords

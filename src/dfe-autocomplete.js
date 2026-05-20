@@ -1,6 +1,4 @@
-import defaultSort, { createSort } from './sort'
-import { createRemoveStopWords } from './sort/stop_words'
-import { createIndexedSort } from './sort/search-index'
+import { buildSortFunction } from './sort'
 import { createLogger } from './utils/logger'
 import { enhanceOption, getDefaultValue, generateFieldName } from './utils/options'
 import { EventEmitter } from './events'
@@ -22,25 +20,6 @@ function assertKnownEvent (event) {
 const nullTracker = {
   sendTrackingEvent () {},
   trackSearch () {}
-}
-
-function buildSortFunction (options, libraryOptions) {
-  if (libraryOptions.sort) return libraryOptions.sort
-
-  const hasCustomInternals = libraryOptions.stopWords || libraryOptions.calculateWeight || libraryOptions.clean
-  if (!hasCustomInternals && !libraryOptions.useSearchIndex) return defaultSort
-
-  const customConfig = {
-    clean: libraryOptions.clean,
-    removeStopWords: libraryOptions.stopWords ? createRemoveStopWords(libraryOptions.stopWords) : undefined,
-    calculateWeight: libraryOptions.calculateWeight
-  }
-
-  if (libraryOptions.useSearchIndex) {
-    return createIndexedSort(options, customConfig)
-  }
-
-  return createSort(customConfig)
 }
 
 export const setupAccessibleAutoComplete = (component, libraryOptions = {}, EngineClass = AccessibleAutocompleteEngine) => {

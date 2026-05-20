@@ -1,7 +1,7 @@
 import defaultClean from './clean'
 import defaultCalculateWeight from './calculateWeight'
 import { createNormaliser } from './cleanse'
-import { byWeightThenAlphabetically } from './index'
+import { byWeightThenAlphabetically } from './comparators'
 
 function intersection (setA, setB) {
   const result = new Set()

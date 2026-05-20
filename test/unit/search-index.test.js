@@ -77,7 +77,7 @@ describe('createIndexedSort', () => {
     const sortFn = createIndexedSort(options)
     const results = sortFn('london')
 
-    expect(results[0]).toBe('London')
+    expect(results[0].name).toBe('London')
   })
 
   it('filters out non-matching options', () => {
@@ -91,7 +91,7 @@ describe('createIndexedSort', () => {
     const sortFn = createIndexedSort(options)
     const results = sortFn('big smoke')
 
-    expect(results).toContain('London')
+    expect(results.map(r => r.name)).toContain('London')
   })
 })
 
@@ -111,7 +111,7 @@ describe('useSearchIndex option', () => {
     opts.source('math', populateResults)
 
     expect(populateResults).toHaveBeenCalled()
-    expect(populateResults.mock.calls[0][0]).toContain('Mathematics')
+    expect(populateResults.mock.calls[0][0].map(r => r.name)).toContain('Mathematics')
   })
 
   it('produces same results as default sort for basic queries', () => {

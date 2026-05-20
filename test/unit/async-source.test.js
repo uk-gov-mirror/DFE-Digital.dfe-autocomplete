@@ -35,7 +35,10 @@ describe('Async source', () => {
       })
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Result 1', 'Result 2'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Result 1', text: 'Result 1' },
+          { name: 'Result 2', text: 'Result 2' }
+        ])
       })
     })
 
@@ -50,7 +53,10 @@ describe('Async source', () => {
       opts.source('test', populateResults)
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Alpha', 'Beta'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Alpha', text: 'Alpha' },
+          { name: 'Beta', text: 'Beta' }
+        ])
       })
     })
 
@@ -152,7 +158,9 @@ describe('Async source', () => {
       }, { timeout: 500 })
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['London'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'London', text: 'London' }
+        ])
       })
     })
 
@@ -176,7 +184,10 @@ describe('Async source', () => {
       opts.source('test', populateResults)
 
       await vi.waitFor(() => {
-        expect(populateResults).toHaveBeenCalledWith(['Alpha', 'Beta'])
+        expect(populateResults).toHaveBeenCalledWith([
+          { name: 'Alpha', text: 'Alpha' },
+          { name: 'Beta', text: 'Beta' }
+        ])
       }, { timeout: 500 })
     })
 
@@ -200,6 +211,66 @@ describe('Async source', () => {
         expect(errors.length).toBe(1)
         expect(errors[0].message).toContain('500')
       }, { timeout: 500 })
+    })
+  })
+
+  describe('array mode', () => {
+    it('filters the array against the query using the local sort', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: ['Alpha', 'Beta', 'Almond']
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('al', populateResults)
+
+      expect(populateResults).toHaveBeenCalledTimes(1)
+      const results = populateResults.mock.calls[0][0]
+      expect(results.map(r => r.name)).toEqual(['Almond', 'Alpha'])
+    })
+
+    it('accepts pre-shaped option objects', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: [
+          { name: 'London', text: 'London' },
+          { name: 'Leeds', text: 'Leeds' }
+        ]
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('lon', populateResults)
+
+      expect(populateResults.mock.calls[0][0]).toEqual([
+        { name: 'London', text: 'London', weight: expect.any(Number), clean: expect.any(Object) }
+      ])
+    })
+
+    it('respects maxResults', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: ['Alpha', 'Almond', 'Apple'],
+        maxResults: 2
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('a', populateResults)
+
+      expect(populateResults.mock.calls[0][0]).toHaveLength(2)
+    })
+
+    it('ignores whitespace-only queries', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, { source: ['Alpha'] })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('   ', populateResults)
+
+      expect(populateResults).not.toHaveBeenCalled()
     })
   })
 })

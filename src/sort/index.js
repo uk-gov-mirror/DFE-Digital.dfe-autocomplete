@@ -1,88 +1,55 @@
 import defaultClean from './clean'
-import defaultRemoveStopWords from './stop_words'
 import defaultCalculateWeight from './calculateWeight'
+import { normalise, createNormaliser } from './cleanse'
+import { hasWeight, byWeightThenAlphabetically, optionName } from './comparators'
+import { createRemoveStopWords } from './stop_words'
+import { createIndexedSort } from './search-index'
 
-const addWeightWithBoost = (option, query) => {
-  option.weight = defaultCalculateWeight(option.clean, query) * option.clean.boost
-
-  return option
-}
-
-const cleanseOption = (option) => {
-  const synonyms = (option.synonyms || []).map(defaultClean)
-
-  option.clean = {
-    name: defaultClean(option.name),
-    nameWithoutStopWords: defaultRemoveStopWords(option.name),
-    synonyms: synonyms,
-    synonymsWithoutStopWords: synonyms.map(defaultRemoveStopWords),
-    boost: (option.boost || 1)
-  }
-
-  return option
-}
-
-const hasWeight = (option) => (option.weight > 0)
-
-const byWeightThenAlphabetically = (a, b) => {
-  if (a.weight > b.weight) return -1
-  if (a.weight < b.weight) return 1
-  if (a.name < b.name) return -1
-  if (a.name > b.name) return 1
-
-  return 0
-}
-
-const optionName = (option) => option.name
-
-export function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
-  const cleanFn = clean || defaultClean
-  const removeStopWordsFn = removeStopWords || defaultRemoveStopWords
-  const calculateWeightFn = calculateWeight || defaultCalculateWeight
-
-  const customCleanseOption = (option) => {
-    const synonyms = (option.synonyms || []).map(cleanFn)
-
-    option.clean = {
-      name: cleanFn(option.name),
-      nameWithoutStopWords: removeStopWordsFn(option.name),
-      synonyms: synonyms,
-      synonymsWithoutStopWords: synonyms.map(removeStopWordsFn),
-      boost: (option.boost || 1)
-    }
-
-    return option
-  }
-
-  const customAddWeight = (option, query) => {
-    option.weight = calculateWeightFn(option.clean, query) * option.clean.boost
-    return option
-  }
-
+function buildPipeline (cleanFn, normaliseFn, calculateWeightFn) {
   return (query, options) => {
     const cleanQuery = cleanFn(query)
 
-    return options.map(customCleanseOption)
-      .map((option) => customAddWeight(option, cleanQuery))
+    return options
+      .map((option) => {
+        normaliseFn(option)
+        option.weight = calculateWeightFn(option.clean, cleanQuery) * option.clean.boost
+        return option
+      })
       .filter(hasWeight)
       .sort(byWeightThenAlphabetically)
-      .map(optionName)
   }
 }
 
-export {
-  addWeightWithBoost,
-  cleanseOption,
-  hasWeight,
-  byWeightThenAlphabetically,
-  optionName
-}
-export default (query, options) => {
-  const cleanQuery = defaultClean(query)
+export function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
+  const cleanFn = clean || defaultClean
+  const calculateWeightFn = calculateWeight || defaultCalculateWeight
+  const normaliseFn = (clean || removeStopWords)
+    ? createNormaliser(cleanFn, removeStopWords)
+    : normalise
 
-  return options.map(cleanseOption)
-    .map((option) => addWeightWithBoost(option, cleanQuery))
-    .filter(hasWeight)
-    .sort(byWeightThenAlphabetically)
-    .map(optionName)
+  return buildPipeline(cleanFn, normaliseFn, calculateWeightFn)
 }
+
+const defaultSort = buildPipeline(defaultClean, normalise, defaultCalculateWeight)
+
+export function buildSortFunction (options, libraryOptions) {
+  if (libraryOptions.sort) return libraryOptions.sort
+
+  const hasCustomInternals = libraryOptions.stopWords || libraryOptions.calculateWeight || libraryOptions.clean
+  if (!hasCustomInternals && !libraryOptions.useSearchIndex) return defaultSort
+
+  const customConfig = {
+    clean: libraryOptions.clean,
+    removeStopWords: libraryOptions.stopWords ? createRemoveStopWords(libraryOptions.stopWords) : undefined,
+    calculateWeight: libraryOptions.calculateWeight
+  }
+
+  if (libraryOptions.useSearchIndex) {
+    return createIndexedSort(options, customConfig)
+  }
+
+  return createSort(customConfig)
+}
+
+export { normalise, hasWeight, byWeightThenAlphabetically, optionName }
+export default defaultSort

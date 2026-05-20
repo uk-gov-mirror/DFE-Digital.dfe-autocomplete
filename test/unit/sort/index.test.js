@@ -1,16 +1,15 @@
 import { describe, it, expect } from 'vitest'
 import sort, {
-  cleanseOption,
-  addWeightWithBoost,
+  normalise,
   hasWeight,
   byWeightThenAlphabetically,
   optionName
 } from '@/sort/index'
 
-describe('cleanseOption', () => {
+describe('normalise', () => {
   it('creates clean object with processed name', () => {
     const option = { name: 'London', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.name).toBe('london')
     expect(result.clean.boost).toBe(1)
@@ -18,14 +17,14 @@ describe('cleanseOption', () => {
 
   it('cleans synonyms', () => {
     const option = { name: 'London', synonyms: ['Big Smoke', 'The Capital'], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonyms).toEqual(['big smoke', 'the capital'])
   })
 
   it('removes stop words from name', () => {
     const option = { name: 'The University of London', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.nameWithoutStopWords).not.toContain('The')
     expect(result.clean.nameWithoutStopWords).toContain('University')
@@ -34,7 +33,7 @@ describe('cleanseOption', () => {
 
   it('removes stop words from synonyms', () => {
     const option = { name: 'Test', synonyms: ['The College of Art'], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonymsWithoutStopWords.length).toBe(1)
     expect(result.clean.synonymsWithoutStopWords[0]).not.toContain('The')
@@ -42,56 +41,43 @@ describe('cleanseOption', () => {
 
   it('preserves boost value', () => {
     const option = { name: 'Test', synonyms: [], boost: 1.5 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.boost).toBe(1.5)
   })
 
   it('defaults boost to 1 when missing', () => {
     const option = { name: 'Test', synonyms: [] }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.boost).toBe(1)
   })
 
   it('handles empty synonyms array', () => {
     const option = { name: 'Test', synonyms: [], boost: 1 }
-    const result = cleanseOption(option)
+    const result = normalise(option)
 
     expect(result.clean.synonyms).toEqual([])
     expect(result.clean.synonymsWithoutStopWords).toEqual([])
   })
 })
 
-describe('addWeightWithBoost', () => {
-  it('sets weight on option', () => {
-    const option = {
-      name: 'london',
-      clean: {
-        name: 'london',
-        nameWithoutStopWords: 'london',
-        synonyms: [],
-        synonymsWithoutStopWords: [],
-        boost: 1
-      }
-    }
-    const result = addWeightWithBoost(option, 'london')
-    expect(result.weight).toBe(100) // exact match × boost 1
+describe('weight calculation through pipeline', () => {
+  it('exact match gets weight 100', () => {
+    const results = sort('london', [
+      { name: 'London', synonyms: [], boost: 1 }
+    ])
+    expect(results[0].name).toBe('London')
+    expect(results[0].weight).toBe(100)
   })
 
-  it('applies boost multiplier to weight', () => {
-    const option = {
-      name: 'london',
-      clean: {
-        name: 'london',
-        nameWithoutStopWords: 'london',
-        synonyms: [],
-        synonymsWithoutStopWords: [],
-        boost: 2
-      }
-    }
-    const result = addWeightWithBoost(option, 'london')
-    expect(result.weight).toBe(200) // 100 × 2
+  it('boost multiplier affects ordering', () => {
+    const results = sort('alpha', [
+      { name: 'Alpha A', synonyms: [], boost: 1 },
+      { name: 'Alpha B', synonyms: [], boost: 2 }
+    ])
+    expect(results[0].name).toBe('Alpha B')
+    expect(results[1].name).toBe('Alpha A')
   })
 })
 
@@ -149,9 +135,9 @@ describe('sort (default export)', () => {
     { name: 'Bristol', synonyms: [], boost: 1 },
   ]
 
-  it('returns matching options sorted by relevance', () => {
+  it('returns matching option objects sorted by relevance', () => {
     const results = sort('london', options)
-    expect(results[0]).toBe('London')
+    expect(results[0].name).toBe('London')
   })
 
   it('filters out non-matching options', () => {
@@ -159,14 +145,17 @@ describe('sort (default export)', () => {
     expect(results).toEqual([])
   })
 
-  it('returns results as name strings', () => {
+  it('returns option objects with name and weight', () => {
     const results = sort('lon', options)
-    results.forEach(r => expect(typeof r).toBe('string'))
+    results.forEach(r => {
+      expect(r).toHaveProperty('name')
+      expect(r).toHaveProperty('weight')
+    })
   })
 
   it('matches via synonyms', () => {
     const results = sort('big smoke', options)
-    expect(results).toContain('London')
+    expect(results.map(r => r.name)).toContain('London')
   })
 
   it('applies boost multiplier to ordering', () => {
@@ -175,9 +164,8 @@ describe('sort (default export)', () => {
       { name: 'Alpha College', synonyms: [], boost: 2 },
     ]
     const results = sort('alpha', boostedOptions)
-    // Both start with "alpha" (weight 60), but College has boost 2 → weight 120 vs 60
-    expect(results[0]).toBe('Alpha College')
-    expect(results[1]).toBe('Alpha School')
+    expect(results[0].name).toBe('Alpha College')
+    expect(results[1].name).toBe('Alpha School')
   })
 
   it('sorts alphabetically for equal weights', () => {
@@ -186,8 +174,8 @@ describe('sort (default export)', () => {
       { name: 'Alpha School', synonyms: [], boost: 1 },
     ]
     const results = sort('school', equalOptions)
-    expect(results[0]).toBe('Alpha School')
-    expect(results[1]).toBe('Zebra School')
+    expect(results[0].name).toBe('Alpha School')
+    expect(results[1].name).toBe('Zebra School')
   })
 
   it('handles empty options list', () => {

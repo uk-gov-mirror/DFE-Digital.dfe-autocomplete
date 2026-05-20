@@ -61,8 +61,14 @@ function createLocalSource (sortFn, options, { tracker, log, emitter, plugins, m
 export function buildSource (libraryOptions, context) {
   const customSource = libraryOptions.source
 
-  if (typeof customSource === 'function') {
+  if (customSource && typeof customSource === 'function') {
     return createAsyncHandler(customSource, customSource.debounce || 0, context)
+  }
+
+  if (Array.isArray(customSource)) {
+    const arrayOptions = normalizeResults(customSource)
+    context.setAsyncOptions(arrayOptions)
+    return createLocalSource(context.sortFn, arrayOptions, context)
   }
 
   if (customSource && typeof customSource === 'object' && customSource.url) {

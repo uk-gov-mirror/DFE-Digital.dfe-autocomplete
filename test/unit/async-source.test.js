@@ -213,4 +213,64 @@ describe('Async source', () => {
       }, { timeout: 500 })
     })
   })
+
+  describe('array mode', () => {
+    it('filters the array against the query using the local sort', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: ['Alpha', 'Beta', 'Almond']
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('al', populateResults)
+
+      expect(populateResults).toHaveBeenCalledTimes(1)
+      const results = populateResults.mock.calls[0][0]
+      expect(results.map(r => r.name)).toEqual(['Almond', 'Alpha'])
+    })
+
+    it('accepts pre-shaped option objects', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: [
+          { name: 'London', text: 'London' },
+          { name: 'Leeds', text: 'Leeds' }
+        ]
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('lon', populateResults)
+
+      expect(populateResults.mock.calls[0][0]).toEqual([
+        { name: 'London', text: 'London', weight: expect.any(Number), clean: expect.any(Object) }
+      ])
+    })
+
+    it('respects maxResults', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, {
+        source: ['Alpha', 'Almond', 'Apple'],
+        maxResults: 2
+      })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('a', populateResults)
+
+      expect(populateResults.mock.calls[0][0]).toHaveLength(2)
+    })
+
+    it('ignores whitespace-only queries', () => {
+      const container = createAutocompleteFixture()
+      setupAccessibleAutoComplete(container, { source: ['Alpha'] })
+
+      const opts = accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0]
+      const populateResults = vi.fn()
+      opts.source('   ', populateResults)
+
+      expect(populateResults).not.toHaveBeenCalled()
+    })
+  })
 })

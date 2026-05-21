@@ -61,6 +61,7 @@ describe('SearchIndex', () => {
 
   it('pre-computes clean data on options', () => {
     const index = new SearchIndex(options)
+    expect(index).toBeInstanceOf(SearchIndex)
     expect(options[0].clean).toBeDefined()
     expect(options[0].clean.name).toBe('london')
   })

@@ -131,14 +131,8 @@ describe('calculateWeight', () => {
   })
 
   it('returns 70 for synonym match after stop word removal', () => {
-    const option = {
-      name: 'some university',
-      nameWithoutStopWords: 'some university',
-      synonyms: ['college of arts'],
-      synonymsWithoutStopWords: ['college arts']
-    }
-    // query "college of arts" exactly matches synonym → that's 75
-    // To get 70: raw synonyms must NOT match, but synonymsWithoutStopWords must match queryWithoutStopWords
+    // To get 70: raw synonyms must NOT match query, but synonymsWithoutStopWords must match queryWithoutStopWords.
+    // A raw exact synonym match would score 75 instead.
     const option2 = {
       name: 'some university',
       nameWithoutStopWords: 'some university',
@@ -173,12 +167,6 @@ describe('calculateWeight', () => {
   })
 
   it('returns 40 for synonym starts with query after stop word removal', () => {
-    const option = {
-      name: 'some name',
-      nameWithoutStopWords: 'some name',
-      synonyms: ['the college of arts'],
-      synonymsWithoutStopWords: ['college arts']
-    }
     // query = "the col" → without stop words = "col"
     // synonyms don't start with "the col" (no synonym starts with it)
     // but synonym "the college of arts" starts with "the col"? Let's check startsWith:

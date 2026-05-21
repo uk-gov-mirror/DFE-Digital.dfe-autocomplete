@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import dfeAutocomplete from '@/wrapper'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 // Mock accessible-autocomplete
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import dfeAutocomplete from '@/wrapper'
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Error handling', () => {
   afterEach(() => {

@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 // Mock accessible-autocomplete to avoid Preact rendering in unit tests
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('setupAccessibleAutoComplete', () => {
   beforeEach(() => {
@@ -105,7 +105,7 @@ describe('setupAccessibleAutoComplete', () => {
       const container = createAutocompleteFixture({
         options: [
           { value: '1', label: 'Alpha', text: 'Alpha' },
-          { value: '2', label: 'Beta', text: 'Beta' },
+          { value: '2', label: 'Beta', text: 'Beta' }
         ]
       })
       setupAccessibleAutoComplete(container)

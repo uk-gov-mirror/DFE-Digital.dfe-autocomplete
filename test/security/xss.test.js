@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 // Mock accessible-autocomplete to test suggestion template directly
 vi.mock('accessible-autocomplete', () => ({
   default: {
@@ -8,10 +11,7 @@ vi.mock('accessible-autocomplete', () => ({
   }
 }))
 
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
-
-function getSuggestionTemplate(container) {
+function getSuggestionTemplate (container) {
   setupAccessibleAutoComplete(container)
   return accessibleAutocomplete.enhanceSelectElement.mock.calls[0][0].templates.suggestion
 }

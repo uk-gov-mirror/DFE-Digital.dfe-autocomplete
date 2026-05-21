@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Behaviour options', () => {
   afterEach(() => {
@@ -23,7 +23,7 @@ describe('Behaviour options', () => {
           { value: '1', label: 'Alpha One', text: 'Alpha One' },
           { value: '2', label: 'Alpha Two', text: 'Alpha Two' },
           { value: '3', label: 'Alpha Three', text: 'Alpha Three' },
-          { value: '4', label: 'Alpha Four', text: 'Alpha Four' },
+          { value: '4', label: 'Alpha Four', text: 'Alpha Four' }
         ]
       })
       setupAccessibleAutoComplete(container, { maxResults: 2 })
@@ -40,7 +40,7 @@ describe('Behaviour options', () => {
         options: [
           { value: '1', label: 'Alpha One', text: 'Alpha One' },
           { value: '2', label: 'Alpha Two', text: 'Alpha Two' },
-          { value: '3', label: 'Alpha Three', text: 'Alpha Three' },
+          { value: '3', label: 'Alpha Three', text: 'Alpha Three' }
         ]
       })
       setupAccessibleAutoComplete(container)

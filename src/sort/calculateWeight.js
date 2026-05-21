@@ -1,4 +1,4 @@
-import removeStopWords from './stop_words'
+import removeStopWords from './stop-words'
 
 const WEIGHT = {
   EXACT_NAME: 100,

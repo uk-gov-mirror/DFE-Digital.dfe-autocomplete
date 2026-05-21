@@ -2,7 +2,7 @@ import defaultClean from './clean'
 import defaultCalculateWeight from './calculateWeight'
 import { normalise, createNormaliser } from './cleanse'
 import { hasWeight, byWeightThenAlphabetically, optionName } from './comparators'
-import { createRemoveStopWords } from './stop_words'
+import { createRemoveStopWords } from './stop-words'
 import { createIndexedSort } from './search-index'
 
 function buildPipeline (cleanFn, normaliseFn, calculateWeightFn) {

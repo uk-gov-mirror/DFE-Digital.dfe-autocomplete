@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import removeStopWords from '@/sort/stop_words'
+import removeStopWords from '@/sort/stop-words'
 
 describe('removeStopWords', () => {
   it('removes "the"', () => {

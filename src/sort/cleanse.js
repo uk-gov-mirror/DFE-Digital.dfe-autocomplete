@@ -1,5 +1,5 @@
 import defaultClean from './clean'
-import defaultRemoveStopWords from './stop_words'
+import defaultRemoveStopWords from './stop-words'
 
 export function createNormaliser (cleanFn = defaultClean, removeStopWordsFn = defaultRemoveStopWords) {
   return (option) => {

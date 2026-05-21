@@ -7,7 +7,7 @@ import calculateWeight, {
   synonymsExactMatch,
   synonymsStartsWith,
   wordInSynonymStartsWithQuery
-} from '@/sort/calculateWeight'
+} from '@/sort/calculate-weight'
 
 describe('helper functions', () => {
   describe('exactMatch', () => {

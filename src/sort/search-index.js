@@ -1,5 +1,5 @@
 import defaultClean from './clean'
-import defaultCalculateWeight from './calculateWeight'
+import defaultCalculateWeight from './calculate-weight'
 import { createNormaliser } from './cleanse'
 import { byWeightThenAlphabetically } from './comparators'
 

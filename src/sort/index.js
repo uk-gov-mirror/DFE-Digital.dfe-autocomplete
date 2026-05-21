@@ -1,4 +1,4 @@
-import defaultClean from './clean'
+import { clean as defaultClean } from './clean'
 import defaultCalculateWeight from './calculate-weight'
 import { normalise, createNormaliser } from './cleanse'
 import { hasWeight, byWeightThenAlphabetically, optionName } from './comparators'

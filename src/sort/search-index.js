@@ -1,4 +1,4 @@
-import defaultClean from './clean'
+import { clean as defaultClean } from './clean'
 import defaultCalculateWeight from './calculate-weight'
 import { createNormaliser } from './cleanse'
 import { byWeightThenAlphabetically } from './comparators'

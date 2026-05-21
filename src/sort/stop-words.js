@@ -14,6 +14,4 @@ export function createRemoveStopWords (words) {
   }
 }
 
-const removeStopWords = createRemoveStopWords(defaultStopWords)
-
-export default removeStopWords
+export const removeStopWords = createRemoveStopWords(defaultStopWords)

@@ -1,5 +1,5 @@
 import { clean as defaultClean } from './clean'
-import defaultCalculateWeight from './calculate-weight'
+import { calculateWeight as defaultCalculateWeight } from './calculate-weight'
 import { normalise, createNormaliser } from './cleanse'
 import { hasWeight, byWeightThenAlphabetically, optionName } from './comparators'
 import { createRemoveStopWords } from './stop-words'

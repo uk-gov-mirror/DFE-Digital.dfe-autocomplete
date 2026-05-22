@@ -18,7 +18,8 @@
     "compile:js": "cross-env NODE_ENV=production webpack --progress --stats-modules",
     "compile": "npm run -s 'compile:js'",
     "lint": "standard",
-    "lint:fix": "standard --fix"
+    "lint:fix": "standard --fix",
+    "lint:exports": "eslint --no-eslintrc --config eslint-exports.config.cjs src/"
   },
   "repository": {
     "type": "git",

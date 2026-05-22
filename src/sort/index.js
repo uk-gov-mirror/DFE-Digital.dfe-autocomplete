@@ -20,7 +20,7 @@ function buildPipeline (cleanFn, normaliseFn, calculateWeightFn) {
   }
 }
 
-export function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
+function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
   const cleanFn = clean || defaultClean
   const calculateWeightFn = calculateWeight || defaultCalculateWeight
   const normaliseFn = (clean || removeStopWords)
@@ -32,7 +32,7 @@ export function createSort ({ clean, removeStopWords, calculateWeight } = {}) {
 
 const defaultSort = buildPipeline(defaultClean, normalise, defaultCalculateWeight)
 
-export function buildSortFunction (options, libraryOptions) {
+function buildSortFunction (options, libraryOptions) {
   if (libraryOptions.sort) return libraryOptions.sort
 
   const hasCustomInternals = libraryOptions.stopWords || libraryOptions.calculateWeight || libraryOptions.clean
@@ -51,5 +51,5 @@ export function buildSortFunction (options, libraryOptions) {
   return createSort(customConfig)
 }
 
-export { normalise, hasWeight, byWeightThenAlphabetically, optionName }
+export { createSort, buildSortFunction, normalise, hasWeight, byWeightThenAlphabetically, optionName }
 export default defaultSort

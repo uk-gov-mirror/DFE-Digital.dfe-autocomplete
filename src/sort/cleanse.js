@@ -1,7 +1,7 @@
 import { clean as defaultClean } from './clean'
 import { removeStopWords as defaultRemoveStopWords } from './stop-words'
 
-export function createNormaliser (cleanFn = defaultClean, removeStopWordsFn = defaultRemoveStopWords) {
+function createNormaliser (cleanFn = defaultClean, removeStopWordsFn = defaultRemoveStopWords) {
   return (option) => {
     const synonyms = (option.synonyms || []).map(cleanFn)
 
@@ -17,4 +17,6 @@ export function createNormaliser (cleanFn = defaultClean, removeStopWordsFn = de
   }
 }
 
-export const normalise = createNormaliser()
+const normalise = createNormaliser()
+
+export { createNormaliser, normalise }

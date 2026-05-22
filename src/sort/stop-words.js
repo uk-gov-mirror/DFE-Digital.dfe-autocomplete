@@ -4,7 +4,7 @@ function escapeRegExp (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-export function createRemoveStopWords (words) {
+function createRemoveStopWords (words) {
   const regex = new RegExp(words.map(word => `(\\s+)?${escapeRegExp(word)}(\\s+)?`).join('|'), 'gi')
 
   return (text) => {
@@ -14,4 +14,6 @@ export function createRemoveStopWords (words) {
   }
 }
 
-export const removeStopWords = createRemoveStopWords(defaultStopWords)
+const removeStopWords = createRemoveStopWords(defaultStopWords)
+
+export { createRemoveStopWords, removeStopWords }

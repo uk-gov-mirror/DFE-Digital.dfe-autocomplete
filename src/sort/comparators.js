@@ -1,6 +1,6 @@
-export const hasWeight = (option) => option.weight > 0
+const hasWeight = (option) => option.weight > 0
 
-export const byWeightThenAlphabetically = (a, b) => {
+const byWeightThenAlphabetically = (a, b) => {
   if (a.weight > b.weight) return -1
   if (a.weight < b.weight) return 1
   if (a.name < b.name) return -1
@@ -8,4 +8,6 @@ export const byWeightThenAlphabetically = (a, b) => {
   return 0
 }
 
-export const optionName = (option) => option.name
+const optionName = (option) => option.name
+
+export { hasWeight, byWeightThenAlphabetically, optionName }

@@ -1,4 +1,6 @@
-export const clean = (text) => text.trim()
+const clean = (text) => text.trim()
   .replace(/['’]/g, '')
   .replace(/[.,"/#!$%^&*;:{}=\-_`~()]/g, ' ')
   .toLowerCase()
+
+export { clean }

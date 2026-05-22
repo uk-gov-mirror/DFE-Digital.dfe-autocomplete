@@ -1,4 +1,4 @@
-export function enhanceOption (option) {
+function enhanceOption (option) {
   const synonymsAttr = option.getAttribute('data-synonyms')
   return {
     name: option.label,
@@ -10,7 +10,7 @@ export function enhanceOption (option) {
   }
 }
 
-export function getDefaultValue (component) {
+function getDefaultValue (component) {
   return component.getAttribute('data-default-value') || ''
 }
 
@@ -21,7 +21,7 @@ export function getDefaultValue (component) {
 // 2. Bracketed select name with rawAttribute: 'course[subject]' → 'course[subject_raw]'
 // 3. Bracketed select name without rawAttribute: 'course[subject]' → 'course[subject]'
 // 4. Simple select name: 'subject' → 'subject'
-export function generateFieldName (selectEl, libraryOptions) {
+function generateFieldName (selectEl, libraryOptions) {
   if (libraryOptions.name) return libraryOptions.name
 
   const matches = /^(?<prefix>\w+)\[(?<key>\w+)\]$/.exec(selectEl.name)
@@ -32,3 +32,5 @@ export function generateFieldName (selectEl, libraryOptions) {
     ? `${prefix}[${key}_raw]`
     : `${prefix}[${key}]`
 }
+
+export { enhanceOption, getDefaultValue, generateFieldName }

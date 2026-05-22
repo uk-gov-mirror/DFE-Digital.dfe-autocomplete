@@ -1,4 +1,4 @@
-export class EventEmitter {
+class EventEmitter {
   constructor () {
     this.listeners = {}
   }
@@ -34,3 +34,5 @@ export class EventEmitter {
     return this.listeners[event]?.length || 0
   }
 }
+
+export { EventEmitter }

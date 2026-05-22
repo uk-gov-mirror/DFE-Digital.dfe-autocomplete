@@ -1,11 +1,12 @@
 import { setupAccessibleAutoComplete } from './dfe-autocomplete'
 import { AccessibleAutocompleteEngine } from './engines/accessible-autocomplete'
+import { BaseEngine } from './engines/base'
 import { registerPlugin } from './plugins'
 
 let CurrentEngine = AccessibleAutocompleteEngine
 
-export function setEngine (EngineClass) { CurrentEngine = EngineClass }
-export function getEngine () { return CurrentEngine }
+function setEngine (EngineClass) { CurrentEngine = EngineClass }
+function getEngine () { return CurrentEngine }
 
 function dfeAutocomplete (libraryOptions = {}) {
   const $allAutocompleteElements = document.querySelectorAll('[data-module="app-dfe-autocomplete"]')
@@ -19,12 +20,11 @@ function dfeAutocomplete (libraryOptions = {}) {
   })
 }
 
-export function dfeAutocompleteField (element, options = {}) {
+function dfeAutocompleteField (element, options = {}) {
   return setupAccessibleAutoComplete(element, options, CurrentEngine)
 }
 
 dfeAutocomplete.use = (plugin) => registerPlugin(plugin)
 
-export { AccessibleAutocompleteEngine }
-export { BaseEngine } from './engines/base'
+export { setEngine, getEngine, dfeAutocompleteField, AccessibleAutocompleteEngine, BaseEngine }
 export default dfeAutocomplete

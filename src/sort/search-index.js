@@ -1,5 +1,5 @@
-import defaultClean from './clean'
-import defaultCalculateWeight from './calculateWeight'
+import { clean as defaultClean } from './clean'
+import { calculateWeight as defaultCalculateWeight } from './calculate-weight'
 import { createNormaliser } from './cleanse'
 import { byWeightThenAlphabetically } from './comparators'
 
@@ -11,7 +11,7 @@ function intersection (setA, setB) {
   return result
 }
 
-export class SearchIndex {
+class SearchIndex {
   constructor (options, { clean, removeStopWords } = {}) {
     this.cleanFn = clean || defaultClean
     this.options = options
@@ -57,7 +57,7 @@ export class SearchIndex {
   }
 }
 
-export function createIndexedSort (options, { clean, removeStopWords, calculateWeight } = {}) {
+function createIndexedSort (options, { clean, removeStopWords, calculateWeight } = {}) {
   const cleanFn = clean || defaultClean
   const calculateWeightFn = calculateWeight || defaultCalculateWeight
   const index = new SearchIndex(options, { clean: cleanFn, removeStopWords })
@@ -74,3 +74,5 @@ export function createIndexedSort (options, { clean, removeStopWords, calculateW
       .sort(byWeightThenAlphabetically)
   }
 }
+
+export { SearchIndex, createIndexedSort }

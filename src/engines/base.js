@@ -1,4 +1,4 @@
-export class BaseEngine {
+class BaseEngine {
   constructor (element, options) {
     this.element = element
     this.options = options
@@ -9,3 +9,5 @@ export class BaseEngine {
   getValue () { throw new Error('Not implemented') }
   setValue (value) { throw new Error('Not implemented') }
 }
+
+export { BaseEngine }

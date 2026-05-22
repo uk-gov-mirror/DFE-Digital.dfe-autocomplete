@@ -38,6 +38,10 @@ jobs:
         with:
           node-version-file: '.nvmrc'
       - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Lint exports
+        run: npm run lint:exports
       - name: Run tests
         run: npm test
       - name: Build

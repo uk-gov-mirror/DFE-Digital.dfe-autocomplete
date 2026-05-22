@@ -2,14 +2,14 @@ import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 import { registerPlugin, getGlobalPlugins, clearGlobalPlugins } from '@/plugins'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('Plugin system', () => {
   beforeEach(() => {

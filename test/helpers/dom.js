@@ -8,7 +8,7 @@
  * @param {Array<{value: string, label: string, text?: string, synonyms?: string, append?: string, hint?: string, boost?: string}>} opts.options
  * @returns {HTMLElement} The container element
  */
-export function createAutocompleteFixture({
+export function createAutocompleteFixture ({
   selectName = 'course[subject]',
   defaultValue = '',
   hasError = false,
@@ -16,7 +16,7 @@ export function createAutocompleteFixture({
     { value: '', label: 'Select a subject' },
     { value: '1', label: 'Mathematics', text: 'Mathematics', synonyms: 'maths|math', boost: '1.5' },
     { value: '2', label: 'English Literature', text: 'English Literature' },
-    { value: '3', label: 'Physics', text: 'Physics', append: '(PHY)', hint: 'Science subject' },
+    { value: '3', label: 'Physics', text: 'Physics', append: '(PHY)', hint: 'Science subject' }
   ]
 } = {}) {
   const container = document.createElement('div')
@@ -54,6 +54,6 @@ export function createAutocompleteFixture({
 /**
  * Removes all autocomplete fixtures from the DOM.
  */
-export function cleanupFixtures() {
+export function cleanupFixtures () {
   document.querySelectorAll('[data-module="app-dfe-autocomplete"]').forEach(el => el.remove())
 }

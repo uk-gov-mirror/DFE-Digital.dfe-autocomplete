@@ -1,7 +1,7 @@
 const DEFAULT_DEBOUNCE_MS = 300
 const DEFAULT_QUERY_PARAM = 'q'
 
-function normalizeResults (raw) {
+function normaliseResults (raw) {
   return raw.map(r => (typeof r === 'string' ? { name: r, text: r } : r))
 }
 
@@ -20,7 +20,7 @@ function createAsyncHandler (fetchFn, debounceMs, { tracker, log, emitter, plugi
       try {
         const raw = await fetchFn(query)
         const limited = raw.slice(0, maxResults)
-        const results = normalizeResults(limited)
+        const results = normaliseResults(limited)
         setAsyncOptions(results)
 
         log.log('Search:', query, '→', results.length, 'results')
@@ -58,7 +58,7 @@ function createLocalSource (sortFn, options, { tracker, log, emitter, plugins, m
   }
 }
 
-export function buildSource (libraryOptions, context) {
+function buildSource (libraryOptions, context) {
   const customSource = libraryOptions.source
 
   if (customSource && typeof customSource === 'function') {
@@ -66,7 +66,7 @@ export function buildSource (libraryOptions, context) {
   }
 
   if (Array.isArray(customSource)) {
-    const arrayOptions = normalizeResults(customSource)
+    const arrayOptions = normaliseResults(customSource)
     context.setAsyncOptions(arrayOptions)
     return createLocalSource(context.sortFn, arrayOptions, context)
   }
@@ -84,3 +84,5 @@ export function buildSource (libraryOptions, context) {
 
   return createLocalSource(context.sortFn, context.options, context)
 }
+
+export { buildSource }

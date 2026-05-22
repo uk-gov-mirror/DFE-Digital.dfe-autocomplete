@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import { setupAccessibleAutoComplete } from '../dfe-autocomplete'
 import { AccessibleAutocompleteEngine } from '../engines/accessible-autocomplete'
 
-export class DfeAutocompleteController extends Controller {
+class DfeAutocompleteController extends Controller {
   static values = {
     minLength: { type: Number, default: 1 },
     autoselect: { type: Boolean, default: true },
@@ -29,3 +29,5 @@ export class DfeAutocompleteController extends Controller {
     this.instance?.destroy()
   }
 }
+
+export { DfeAutocompleteController }

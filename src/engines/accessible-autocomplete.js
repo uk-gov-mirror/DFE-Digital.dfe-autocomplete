@@ -1,7 +1,7 @@
 import accessibleAutocomplete from 'accessible-autocomplete'
 import { BaseEngine } from './base'
 
-export class AccessibleAutocompleteEngine extends BaseEngine {
+class AccessibleAutocompleteEngine extends BaseEngine {
   initialize () {
     accessibleAutocomplete.enhanceSelectElement(this.options)
   }
@@ -26,3 +26,5 @@ export class AccessibleAutocompleteEngine extends BaseEngine {
     if (input) input.value = value
   }
 }
+
+export { AccessibleAutocompleteEngine }

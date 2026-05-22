@@ -17,7 +17,9 @@
     "test:watch": "vitest",
     "compile:js": "cross-env NODE_ENV=production webpack --progress --stats-modules",
     "compile": "npm run -s 'compile:js'",
-    "standard": "standard"
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "lint:exports": "eslint --no-eslintrc --config eslint-exports.config.cjs src/"
   },
   "repository": {
     "type": "git",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.0",
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/plugin-transform-class-properties": "^7.25.9",
     "@babel/plugin-transform-member-expression-literals": "^7.25.9",
@@ -62,6 +65,7 @@
     "sass": "^1.81.0",
     "sass-loader": "^16.0.3",
     "source-map-loader": "^5.0.0",
+    "standard": "^17.1.2",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.10",
     "vitest": "^2.1.9",
@@ -73,7 +77,13 @@
   },
   "homepage": "https://github.com/DFE-Digital/dfe-autocomplete#readme",
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "@babel/eslint-parser",
+    "ignore": [
+      "dist/",
+      "coverage/",
+      "lib/",
+      "spec/dummy/"
+    ]
   },
   "dependencies": {
     "accessible-autocomplete": "^3.0.1"

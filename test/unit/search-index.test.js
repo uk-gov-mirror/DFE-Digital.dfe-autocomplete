@@ -2,19 +2,19 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { SearchIndex, createIndexedSort } from '@/sort/search-index'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 vi.mock('accessible-autocomplete', () => ({
   default: { enhanceSelectElement: vi.fn() }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 describe('SearchIndex', () => {
   const options = [
     { name: 'London', synonyms: ['Big Smoke'], boost: 1 },
     { name: 'Manchester', synonyms: ['Manc'], boost: 1 },
     { name: 'Birmingham', synonyms: [], boost: 1 },
-    { name: 'University of London', synonyms: ['UCL'], boost: 1 },
+    { name: 'University of London', synonyms: ['UCL'], boost: 1 }
   ]
 
   it('finds options by single word prefix', () => {
@@ -61,6 +61,7 @@ describe('SearchIndex', () => {
 
   it('pre-computes clean data on options', () => {
     const index = new SearchIndex(options)
+    expect(index).toBeInstanceOf(SearchIndex)
     expect(options[0].clean).toBeDefined()
     expect(options[0].clean.name).toBe('london')
   })
@@ -70,7 +71,7 @@ describe('createIndexedSort', () => {
   const options = [
     { name: 'London', synonyms: ['Big Smoke'], boost: 1 },
     { name: 'Manchester', synonyms: ['Manc'], boost: 1 },
-    { name: 'Birmingham', synonyms: [], boost: 1 },
+    { name: 'Birmingham', synonyms: [], boost: 1 }
   ]
 
   it('returns sorted names by relevance', () => {

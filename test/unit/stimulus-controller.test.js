@@ -2,14 +2,14 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { Application } from '@hotwired/stimulus'
 import { DfeAutocompleteController } from '@/stimulus/dfe-autocomplete-controller'
 
+import accessibleAutocomplete from 'accessible-autocomplete'
+
 // Mock accessible-autocomplete so we can inspect options passed
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import accessibleAutocomplete from 'accessible-autocomplete'
 
 function createStimulusFixture (dataAttrs = {}) {
   const container = document.createElement('div')

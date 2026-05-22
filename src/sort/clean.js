@@ -3,4 +3,4 @@ const clean = (text) => text.trim()
   .replace(/[.,"/#!$%^&*;:{}=\-_`~()]/g, ' ')
   .toLowerCase()
 
-export default clean
+export { clean }

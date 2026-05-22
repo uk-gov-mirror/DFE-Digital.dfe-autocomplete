@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { cleanupFixtures } from 'test-helpers/dom'
 import { BaseEngine } from '@/engines/base'
 

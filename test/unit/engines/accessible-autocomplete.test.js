@@ -12,7 +12,10 @@ describe('AccessibleAutocompleteEngine', () => {
     const selectEl = container.querySelector('select')
     const options = {
       selectElement: selectEl,
-      source: (query, cb) => cb([]),
+      source: (query, cb) => {
+        const results = []
+        cb(results)
+      },
       name: 'test'
     }
     const engine = new AccessibleAutocompleteEngine(container, options)

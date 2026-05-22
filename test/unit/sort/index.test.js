@@ -132,7 +132,7 @@ describe('sort (default export)', () => {
     { name: 'London', synonyms: ['Big Smoke'], boost: 1 },
     { name: 'Manchester', synonyms: ['Manc'], boost: 1 },
     { name: 'Birmingham', synonyms: [], boost: 1 },
-    { name: 'Bristol', synonyms: [], boost: 1 },
+    { name: 'Bristol', synonyms: [], boost: 1 }
   ]
 
   it('returns matching option objects sorted by relevance', () => {
@@ -161,7 +161,7 @@ describe('sort (default export)', () => {
   it('applies boost multiplier to ordering', () => {
     const boostedOptions = [
       { name: 'Alpha School', synonyms: [], boost: 1 },
-      { name: 'Alpha College', synonyms: [], boost: 2 },
+      { name: 'Alpha College', synonyms: [], boost: 2 }
     ]
     const results = sort('alpha', boostedOptions)
     expect(results[0].name).toBe('Alpha College')
@@ -171,7 +171,7 @@ describe('sort (default export)', () => {
   it('sorts alphabetically for equal weights', () => {
     const equalOptions = [
       { name: 'Zebra School', synonyms: [], boost: 1 },
-      { name: 'Alpha School', synonyms: [], boost: 1 },
+      { name: 'Alpha School', synonyms: [], boost: 1 }
     ]
     const results = sort('school', equalOptions)
     expect(results[0].name).toBe('Alpha School')

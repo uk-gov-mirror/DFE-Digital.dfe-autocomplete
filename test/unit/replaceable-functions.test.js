@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { createAutocompleteFixture, cleanupFixtures } from 'test-helpers/dom'
 
+import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
+import accessibleAutocomplete from 'accessible-autocomplete'
+import { createSort } from '@/sort/index'
+
 vi.mock('accessible-autocomplete', () => ({
   default: {
     enhanceSelectElement: vi.fn()
   }
 }))
-
-import { setupAccessibleAutoComplete } from '@/dfe-autocomplete'
-import accessibleAutocomplete from 'accessible-autocomplete'
-import { createSort } from '@/sort/index'
 
 describe('Replaceable functions', () => {
   afterEach(() => {
@@ -38,7 +38,7 @@ describe('Replaceable functions', () => {
       const container = createAutocompleteFixture({
         options: [
           { value: '1', label: 'University of London', text: 'University of London' },
-          { value: '2', label: 'College of Arts', text: 'College of Arts' },
+          { value: '2', label: 'College of Arts', text: 'College of Arts' }
         ]
       })
 
@@ -63,7 +63,7 @@ describe('Replaceable functions', () => {
       const container = createAutocompleteFixture({
         options: [
           { value: '1', label: 'Alpha', text: 'Alpha' },
-          { value: '2', label: 'Beta', text: 'Beta' },
+          { value: '2', label: 'Beta', text: 'Beta' }
         ]
       })
 
@@ -88,7 +88,7 @@ describe('Replaceable functions', () => {
     it('uses custom text cleaning', () => {
       const container = createAutocompleteFixture({
         options: [
-          { value: '1', label: 'Café', text: 'Café' },
+          { value: '1', label: 'Café', text: 'Café' }
         ]
       })
 
@@ -113,7 +113,7 @@ describe('Replaceable functions', () => {
 
       const options = [
         { name: 'London', synonyms: [], boost: 1 },
-        { name: 'Manchester', synonyms: [], boost: 1 },
+        { name: 'Manchester', synonyms: [], boost: 1 }
       ]
 
       const results = sortFn('london', options)
@@ -124,7 +124,7 @@ describe('Replaceable functions', () => {
       const sortFn = createSort({})
 
       const options = [
-        { name: 'London', synonyms: [], boost: 1 },
+        { name: 'London', synonyms: [], boost: 1 }
       ]
 
       const results = sortFn('london', options)

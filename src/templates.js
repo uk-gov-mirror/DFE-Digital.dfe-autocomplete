@@ -34,12 +34,12 @@ function resolveOption (value, getOptions) {
   return opts.find(o => o.name === value || o.text === value)
 }
 
-export function inputValue (value) {
+function inputValue (value) {
   if (value && typeof value === 'object') return value.name
   return value
 }
 
-export function createSuggestionRenderer (getOptions, { highlightMatches, getCurrentQuery }) {
+function createSuggestionRenderer (getOptions, { highlightMatches, getCurrentQuery }) {
   return (value) => {
     const option = resolveOption(value, getOptions)
     if (!option) return '<span>No results found</span>'
@@ -58,3 +58,5 @@ export function createSuggestionRenderer (getOptions, { highlightMatches, getCur
     return html
   }
 }
+
+export { inputValue, createSuggestionRenderer }

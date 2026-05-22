@@ -1,4 +1,4 @@
-import removeStopWords from './stop_words'
+import { removeStopWords } from './stop-words'
 
 const WEIGHT = {
   EXACT_NAME: 100,
@@ -21,14 +21,14 @@ const startsWith = (word, query) => word.search(startsWithRegExp(query)) === 0
 
 const wordsStartsWithQuery = (word, regExps) => regExps.every((regExp) => word.search(regExp) >= 0)
 
-const anyMatch = (words, query, evaluatorFunc) => words.some((word) => evaluatorFunc(word, query))
+const anyMatch = (words, query, evaluatorFn) => words.some((word) => evaluatorFn(word, query))
 const synonymsExactMatch = (synonyms, query) => anyMatch(synonyms, query, exactMatch)
 const synonymsStartsWith = (synonyms, query) => anyMatch(synonyms, query, startsWith)
 
 const wordInSynonymStartsWithQuery = (synonyms, startsWithQueryWordsRegexes) =>
   anyMatch(synonyms, startsWithQueryWordsRegexes, wordsStartsWithQuery)
 
-const calculateWeight = ({ name, synonyms, nameWithoutStopWords, synonymsWithoutStopWords }, query) => {
+function calculateWeight ({ name, synonyms, nameWithoutStopWords, synonymsWithoutStopWords }, query) {
   const queryWithoutStopWords = removeStopWords(query)
 
   if (exactMatch(name, query)) return WEIGHT.EXACT_NAME
@@ -59,7 +59,6 @@ export {
   wordsStartsWithQuery,
   synonymsExactMatch,
   synonymsStartsWith,
-  wordInSynonymStartsWithQuery
+  wordInSynonymStartsWithQuery,
+  calculateWeight
 }
-
-export default calculateWeight

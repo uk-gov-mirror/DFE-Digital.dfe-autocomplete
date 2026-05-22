@@ -4,10 +4,12 @@
 const warn = (...args) => console.warn('[dfe-autocomplete]', ...args)
 const error = (...args) => console.error('[dfe-autocomplete]', ...args)
 
-export function createLogger (enabled) {
+function createLogger (enabled) {
   return {
     log: enabled ? (...args) => console.log('[dfe-autocomplete]', ...args) : () => {},
     warn,
     error
   }
 }
+
+export { createLogger }

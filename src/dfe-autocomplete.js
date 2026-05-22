@@ -22,7 +22,7 @@ const nullTracker = {
   trackSearch () {}
 }
 
-export function setupAccessibleAutoComplete (component, libraryOptions = {}, EngineClass = AccessibleAutocompleteEngine) {
+function setupAccessibleAutoComplete (component, libraryOptions = {}, EngineClass = AccessibleAutocompleteEngine) {
   const debug = component.getAttribute('data-debug') === 'true'
   const log = createLogger(debug)
   const selectEl = component.querySelector('select')
@@ -131,3 +131,5 @@ export function setupAccessibleAutoComplete (component, libraryOptions = {}, Eng
   instances.set(component, instance)
   return instance
 }
+
+export { setupAccessibleAutoComplete }

@@ -1,16 +1,18 @@
 const globalPlugins = []
 
-export function registerPlugin (plugin) {
+function registerPlugin (plugin) {
   if (!plugin.name) {
     throw new Error('[dfe-autocomplete] Plugin must have a name')
   }
   globalPlugins.push(plugin)
 }
 
-export function getGlobalPlugins () {
+function getGlobalPlugins () {
   return globalPlugins
 }
 
-export function clearGlobalPlugins () {
+function clearGlobalPlugins () {
   globalPlugins.length = 0
 }
+
+export { registerPlugin, getGlobalPlugins, clearGlobalPlugins }

@@ -58,7 +58,7 @@ function createLocalSource (sortFn, options, { tracker, log, emitter, plugins, m
   }
 }
 
-export function buildSource (libraryOptions, context) {
+function buildSource (libraryOptions, context) {
   const customSource = libraryOptions.source
 
   if (customSource && typeof customSource === 'function') {
@@ -84,3 +84,5 @@ export function buildSource (libraryOptions, context) {
 
   return createLocalSource(context.sortFn, context.options, context)
 }
+
+export { buildSource }
